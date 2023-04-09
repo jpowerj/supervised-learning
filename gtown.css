@@ -1,0 +1,35 @@
+table {
+  font-size: 14pt;
+}
+
+table th {
+  border-bottom: 1px solid black!important;
+}
+
+table td {
+  border-bottom: 0!important;
+}
+
+.suptable th:last-child {
+  color: orange;
+}
+
+.suptable th:not(:last-child):not(:first-child) {
+  color: blue;
+}
+
+.unsuptable th:not(:first-child) {
+  color:blue;
+}
+
+tbody > tr:hover {
+  background-color: lightblue;
+}
+
+.colA {
+  color: blue;
+}
+
+.colB {
+  color: orange;
+}
