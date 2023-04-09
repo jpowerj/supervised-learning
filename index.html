@@ -339,21 +339,29 @@ Jeff Jacobs
 </section>
 <section id="supervised-vs.-unsupervised-learning" class="slide level2">
 <h2>Supervised vs.&nbsp;Unsupervised Learning</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
 <ul>
 <li><strong>Supervised</strong> Learning: You want the computer to learn the pattern of how <em>you</em> are classifying<sup>1</sup> observations in a dataset
 <ul>
-<li>Discovering the relationship between <em>properties</em> of observations and <em>outcomes</em></li>
-<li>Example (<em>Binary Classification</em>): I go through Craigslist looking for used cars, saving the ones I like to one folder and ones I don’t like to another</li>
-<li>Example (<em>Regression</em>): I assign a score from 0-100 to each used car, bassed on how much I like them</li>
+<li>Discovering the relationship between <em>properties</em> of data and <em>outcomes</em></li>
+<li>Example (<em>Binary Classification</em>): I look at homes on Zillow, saving those I like to folder A and don’t like to folder B</li>
+<li>Example (<em>Regression</em>): I assign a rating of 0-100 to each home</li>
+<li>In both cases: I ask the computer to <em>learn</em> my preferences (how I classify/assign ratings to homes)</li>
 </ul></li>
-<li><strong>Unsupervised</strong> Learning: You want the computer to <em>figure out</em> patterns within a dataset, without any predetermined inferences you want it to make
+</ul>
+</div><div class="column" style="width:50%;">
+<ul>
+<li><strong>Unsupervised</strong> Learning: You want the computer to <em>find</em> patterns in a dataset, without any classification info
 <ul>
 <li>Typically: grouping or clustering observations based on shared properties</li>
-<li>Example: I save all the used car listings I can find, and ask the computer to “find a pattern” in this data</li>
+<li>Example (<em>Clustering</em>): I save all the used car listings I can find, and ask the computer to “find a pattern” in this data, by clustering similar cars together</li>
 <li><a href="https://www.ibm.com/topics/exploratory-data-analysis">“Exploratory” Data Analysis</a></li>
 </ul></li>
 </ul>
-<aside><ol class="aside-footnotes"><li id="fn1"><p>Encompassing both standard classification (sorting each observation into a set number of bins) and regression (assigning a real number to each observation)</p></li></ol></aside></section>
+</div>
+</div>
+<aside><ol class="aside-footnotes"><li id="fn1"><p><em>Whether standard <strong>classification</strong> (sorting each observation into a bin) or <strong>regression</strong> (assigning a real number to each observation)</em></p></li></ol></aside></section>
 <section id="dataset-structures" class="slide level2">
 <h2>Dataset Structures</h2>
 <ul>
@@ -372,7 +380,7 @@ Jeff Jacobs
 <th style="text-align: right;">home_id</th>
 <th style="text-align: right;">sqft</th>
 <th style="text-align: right;">bedrooms</th>
-<th style="text-align: left;">liked</th>
+<th style="text-align: left;">rating</th>
 </tr>
 </thead>
 <tbody>
@@ -380,25 +388,31 @@ Jeff Jacobs
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">1000</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">Disliked</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">2000</td>
 <td style="text-align: right;">2</td>
-<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">Liked</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">2</td>
 <td style="text-align: right;">2500</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: left;">TRUE</td>
+<td style="text-align: left;">Liked</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">3</td>
 <td style="text-align: right;">1500</td>
 <td style="text-align: right;">2</td>
-<td style="text-align: left;">FALSE</td>
+<td style="text-align: left;">Disliked</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">2200</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">Liked</td>
 </tr>
 </tbody>
 </table>
@@ -445,6 +459,11 @@ Jeff Jacobs
 <td style="text-align: right;">1500</td>
 <td style="text-align: right;">2</td>
 </tr>
+<tr class="odd">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">2200</td>
+<td style="text-align: right;">1</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -452,8 +471,8 @@ Jeff Jacobs
 </div>
 </div>
 </section>
-<section id="dataset-structures-1" class="slide level2">
-<h2>Dataset Structures</h2>
+<section id="dataset-structures-visualized" class="slide level2">
+<h2>Dataset Structures: Visualized</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <div class="cell" data-layout-align="center">
@@ -504,17 +523,138 @@ Jeff Jacobs
 </div>
 </div>
 </section>
+<section id="the-learning-in-machine-learning" class="slide level2">
+<h2>The “Learning” in Machine Learning</h2>
+<ul>
+<li>Given these datasets, how do we learn the patterns?</li>
+<li>Naïve idea: Try random lines (each forming a <strong>decision boundary</strong>), pick “best” one</li>
+</ul>
+<div class="r-stack">
+<div class="fragment">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-10-1.png" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="what-makes-a-goodbest-guess" class="slide level2">
+<h2>What Makes a “Good”/“Best” Guess? 🤔</h2>
+<ul>
+<li>What’s your intuition? How about accuracy…</li>
+</ul>
+
+<img data-src="index_files/figure-revealjs/unnamed-chunk-11-1.png" width="960" class="r-stretch quarto-figure-center"><p>So… what’s wrong here?</p>
+</section>
+<section id="whats-wrong-with-accuracy" class="slide level2">
+<h2>What’s Wrong with Accuracy?</h2>
+
+<img data-src="index_files/figure-revealjs/unnamed-chunk-12-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<section id="measuring-errors-f1-score" class="slide level2">
+<h2>Measuring Errors: F1 Score</h2>
+<ul>
+<li>How can we reward guesses which best <em>discriminate</em> between classes?</li>
+</ul>
+<p><span class="math display">\[
+\begin{align*}
+\mathsf{Precision} &amp;= \frac{\# \text{true positives}}{\# \text{predicted positive}} = \frac{tp}{tp+fp} \\[1.5em]
+\mathsf{Recall} &amp;= \frac{\# \text{true positives}}{\# \text{positives in data}} = \frac{tp}{tp+fn} \\[1.5em]
+F_1 &amp;= 2\frac{\mathsf{Precision} \cdot \mathsf{Recall}}{\mathsf{Precision} + \mathsf{Recall}} = \mathsf{HMean}(\mathsf{Precision}, \mathsf{Recall})
+\end{align*}
+\]</span></p>
+<ul>
+<li>How does this fix the issue with accuracy?</li>
+</ul>
+
+<aside><div>
+<p><span class="math inline">\(\mathsf{HMean}\)</span> is the <strong>harmonic mean</strong>, an alternative to the standard (arithmetic) mean that penalizes greater “gaps” between precision and recall: if precision is 0 and recall is 1, for example, their <em>arithmetic</em> mean is 0.5 while their harmonic mean is 0. For the curious: given numbers <span class="math inline">\(X = \{x_1, \ldots, x_n\}\)</span>, <span class="math inline">\(\mathsf{HMean}(X) = \frac{n}{\sum_{i=1}^nx_i^{-1}}\)</span></p>
+</div></aside></section>
+<section id="measuring-errors-the-loss-function" class="slide level2">
+<h2>Measuring Errors: The Loss Function</h2>
+<ul>
+<li>What about the regression case?
+<ul>
+<li>We can no longer just say “true prediction good, false prediction bad”</li>
+</ul></li>
+<li>We have to quantify <strong>how bad</strong> the guess is!
+<ul>
+<li>Then we can scale the penalty accordingly: <span class="math inline">\(penalty \propto badness\)</span></li>
+</ul></li>
+<li>Some common loss functions <span class="math display">\[
+\mathcal{L}(y_{pred}, y_{obs}) = (y_{pred} - y_{obs})^2
+\]</span></li>
+</ul>
+</section>
+<section id="calculus-rears-its-ugly-head" class="slide level2">
+<h2>Calculus Rears its Ugly Head</h2>
+<ul>
+<li>Neural networks use <strong>gradient descent</strong> and <strong>backpropagation</strong> to improve their predictions given a particular loss function.</li>
+<li>Can we just use the <span class="math inline">\(F_1\)</span> score? <span class="math display">\[
+\frac{\partial F_1(weights)}{\partial weights} = \ldots \; ? \; \ldots 💀
+\]</span></li>
+</ul>
+</section>
+<section id="quantifying-discrete-loss" class="slide level2">
+<h2>Quantifying Discrete Loss</h2>
+<ul>
+<li>We can quantify a differentiable <strong>discrete</strong> loss by asking the algorithm <em>how confident</em> it is
+<ul>
+<li>Closer to 0 <span class="math inline">\(\implies\)</span> more confident that the true label is 0</li>
+<li>Closer to 1 <span class="math inline">\(\implies\)</span> more confident that the true label is 1 <span class="math display">\[
+\mathcal{L}_{CE}(y_{pred}, y_{obs}) = -(y_{obs}\log(y_{pred}) + (1-y_{obs})\log(1-y_{pred}))
+\]</span></li>
+</ul></li>
+</ul>
+
+<img data-src="index_files/figure-revealjs/unnamed-chunk-13-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<section id="good-and-bad-news" class="slide level2">
+<h2>Good and Bad News</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<ul>
+<li>Universal Approximation Theorem
+<ul>
+<li>Neural networks can represent any function mapping one Euclidean space to another</li>
+<li>Neural Turing Machines:</li>
+</ul></li>
+</ul>
+<center>
+<img data-src="NTM_Schematic.png" style="width:50.0%">
+</center>
+</div><div class="column" style="width:&quot;50%;">
+<div class="smallmath">
+<ul>
+<li>Weierstrass Approximation Theorem
+<ul>
+<li>Polynomials already could represent any function <span class="math display">\[
+f \in C([a,b],[a,b])
+\]</span> <span class="math display">\[
+\implies \forall \epsilon &gt; 0, \exists p \in \mathbb{R}[x] :
+\]</span> <span class="math display">\[
+\forall x \in [a, b] \; \left|f(x) − p(x)\right| &lt; \epsilon
+\]</span></li>
+</ul></li>
+</ul>
+</div>
+<center>
+<img data-src="Overfitting.svg" style="width:50.0%">
+</center>
+</div>
+</div>
+</section>
+<section id="regularization" class="slide level2">
+<h2>Regularization</h2>
+</section>
 <section id="cross-validation" class="slide level2">
 <h2>Cross-Validation</h2>
 </section>
 <section id="model" class="slide level2">
 <h2>Model</h2>
-</section>
-<section id="loss-functions-and-error-measures" class="slide level2">
-<h2>Loss Functions and Error Measures</h2>
-</section>
-<section id="regularization" class="slide level2">
-<h2>Regularization</h2>
 </section>
 <section id="numerical-optimization" class="slide level2">
 <h2>Numerical Optimization</h2>

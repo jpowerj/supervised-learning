@@ -33,3 +33,12 @@ tbody > tr:hover {
 .colB {
   color: orange;
 }
+
+.smaller-lines ul {
+  line-height: 1;
+}
+
+.smaller-lines li {
+  margin-top: 0.2em!important;
+}
+

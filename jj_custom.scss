@@ -1,0 +1,14 @@
+/*-- scss:defaults --*/
+
+$body-bg: #ffffff;
+$presentation-h2-font-size: 1.5em;
+
+/*-- scss:rules --*/
+
+.smallmath .math.inline {
+  font-size: 90%  !important;
+}
+
+.smallmath .MathJax, .smallmath .MathJax_Display  {
+    font-size: 50%  !important;
+}

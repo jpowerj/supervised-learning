@@ -8,14 +8,19 @@ format:
     footer: "Supervised Learning with Parametric Models"
     css: gtown.css
     df-print: kable
+    theme: [default, jj_custom.scss]
 editor: visual
+toc: false
+number-sections: false
 ---
 
 ```{r setup, include=FALSE}
+set.seed(1948)
 library(knitr)
 library(ggplot2)
 library(dplyr)
 library(ggforce)
+library(patchwork)
 global_theme <- ggplot2::theme_classic() + ggplot2::theme(
   plot.title = element_text(hjust = 0.5, size = 18),
   axis.title = element_text(size = 14),
@@ -26,20 +31,29 @@ global_theme <- ggplot2::theme_classic() + ggplot2::theme(
 )
 knitr::opts_chunk$set(fig.align="center")
 g_pointsize <- 6
+cbPalette <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 ```
 
 ## Supervised vs. Unsupervised Learning
 
+::: columns
+::: {.column width="50%"}
 -   **Supervised** Learning: You want the computer to learn the pattern of how *you* are classifying[^1] observations in a dataset
-    -   Discovering the relationship between *properties* of observations and *outcomes*
-    -   Example (*Binary Classification*): I go through Craigslist looking for used cars, saving the ones I like to one folder and ones I don't like to another
-    -   Example (*Regression*): I assign a score from 0-100 to each used car, bassed on how much I like them
--   **Unsupervised** Learning: You want the computer to *figure out* patterns within a dataset, without any predetermined inferences you want it to make
-    -   Typically: grouping or clustering observations based on shared properties
-    -   Example: I save all the used car listings I can find, and ask the computer to "find a pattern" in this data
-    -   ["Exploratory" Data Analysis](https://www.ibm.com/topics/exploratory-data-analysis)
+    -   Discovering the relationship between *properties* of data and *outcomes*
+    -   Example (*Binary Classification*): I look at homes on Zillow, saving those I like to folder A and don't like to folder B
+    -   Example (*Regression*): I assign a rating of 0-100 to each home
+    -   In both cases: I ask the computer to *learn* my preferences (how I classify/assign ratings to homes)
+:::
 
-[^1]: Encompassing both standard classification (sorting each observation into a set number of bins) and regression (assigning a real number to each observation)
+::: {.column width="50%"}
+-   **Unsupervised** Learning: You want the computer to *find* patterns in a dataset, without any classification info
+    -   Typically: grouping or clustering observations based on shared properties
+    -   Example (*Clustering*): I save all the used car listings I can find, and ask the computer to "find a pattern" in this data, by clustering similar cars together
+    -   ["Exploratory" Data Analysis](https://www.ibm.com/topics/exploratory-data-analysis)
+:::
+:::
+
+[^1]: *Whether standard **classification** (sorting each observation into a bin) or **regression** (assigning a real number to each observation)*
 
 ## Dataset Structures
 
@@ -47,11 +61,12 @@ g_pointsize <- 6
 
 ```{r}
 sup_data <- tibble::tribble(
-  ~home_id, ~sqft, ~bedrooms, ~liked,
-  0, 1000, 1, FALSE,
-  1, 2000, 2, TRUE,
-  2, 2500, 1, TRUE,
-  3, 1500, 2, FALSE
+  ~home_id, ~sqft, ~bedrooms, ~rating,
+  0, 1000, 1, "Disliked",
+  1, 2000, 2, "Liked",
+  2, 2500, 1, "Liked",
+  3, 1500, 2, "Disliked",
+  4, 2200, 1, "Liked"
 )
 ```
 
@@ -69,7 +84,8 @@ unsup_data <- tibble::tribble(
   0, 1000, 1,
   1, 2000, 2,
   2, 2500, 1,
-  3, 1500, 2
+  3, 1500, 2,
+  4, 2200, 1
 )
 ```
 
@@ -79,59 +95,64 @@ unsup_data
 ```
 :::
 
-## Dataset Structures
+## Dataset Structures: Visualized
 
-:::: {.columns}
-
+::: columns
 ::: {.column width="50%"}
-
 ```{r, fig.width=5, fig.height=5.5}
-ggplot(sup_data, aes(x=sqft, y=bedrooms, color=liked)) + 
+ggplot(sup_data, aes(x=sqft, y=bedrooms, color=rating)) + 
   geom_point(size=g_pointsize) +
   labs(
     title = "Supervised Data: House Listings",
     x = "Square Footage",
     y = "Number of Bedrooms",
-    color = "Liked?"
+    color = "Outcome"
   ) +
+  expand_limits(x=c(800,2700), y=c(0.8,2.2)) +
   global_theme
 ```
 :::
 
 ::: {.column width="50%"}
-
 ```{r, fig.width=5, fig.height=5.5}
-ggplot(unsup_data, aes(x=sqft, y=bedrooms)) + 
+# To force a legend
+unsup_grouped <- unsup_data %>% mutate(big=bedrooms > 1)
+unsup_grouped[['big']] <- factor(unsup_grouped[['big']], labels=c("?1","?2"))
+ggplot(unsup_grouped, aes(x=sqft, y=bedrooms, fill=big)) + 
   geom_point(size=g_pointsize) +
   labs(
     x = "Square Footage",
     y = "Number of Bedrooms",
-    color = "Liked?"
+    fill = "?"
   ) +
   global_theme +
-  ggtitle("Unsupervised Data: House Listings")
+  expand_limits(x=c(800,2700), y=c(0.8,2.2)) +
+  ggtitle("Unsupervised Data: House Listings") +
+  theme(legend.background = element_rect(fill="white", color="white"), legend.box.background = element_rect(fill="white"), legend.text = element_text(color="white"), legend.title = element_text(color="white"), legend.position = "right") +
+  scale_fill_discrete(labels=c("?","?")) +
+  #scale_color_discrete(values=c("white","white"))
+  scale_color_manual(name=NULL, values=c("white","white")) +
+  #scale_color_manual(values=c("?1"="white","?2"="white"))
+  guides(fill = guide_legend(override.aes = list(shape = NA)))
 ```
 :::
-
-::::
+:::
 
 ## Different Goals
 
-
-:::: {.columns}
-
+::: columns
 ::: {.column width="50%"}
-
 ```{r, fig.width=5, fig.height=5.5}
-ggplot(sup_data, aes(x=sqft, y=bedrooms, color=liked)) + 
+ggplot(sup_data, aes(x=sqft, y=bedrooms, color=rating)) + 
   geom_point(size=g_pointsize) +
   labs(
     title = "Supervised Data: House Listings",
     x = "Square Footage",
     y = "Number of Bedrooms",
-    color = "Liked?"
+    color = "Outcome"
   ) +
   global_theme +
+  expand_limits(x=c(800,2700), y=c(0.8,2.2)) +
   geom_vline(xintercept = 1750, linetype="dashed", color = "black", size=1) +
   annotate('rect', xmin=-Inf, xmax=1750, ymin=-Inf, ymax=Inf, alpha=.2, fill='red') +
   annotate('rect', xmin=1750, xmax=Inf, ymin=-Inf, ymax=Inf, alpha=.2, fill='blue')
@@ -140,36 +161,313 @@ ggplot(sup_data, aes(x=sqft, y=bedrooms, color=liked)) +
 :::
 
 ::: {.column width="50%"}
-
 ```{r, fig.width=5, fig.height=5.5}
-unsup_grouped <- unsup_data %>% mutate(big=bedrooms > 1)
-ggplot(unsup_grouped, aes(x=sqft, y=bedrooms)) + 
-  geom_mark_ellipse(expand=0.1, aes(fill=big), size = 1.2) +
+ggplot(unsup_grouped, aes(x=sqft, y=bedrooms)) +
+  scale_color_brewer(palette = "PuOr") +
+  geom_mark_ellipse(expand=0.1, aes(fill=big), size = 1) +
   geom_point(size=g_pointsize) +
   labs(
     x = "Square Footage",
-    y = "Number of Bedrooms"
+    y = "Number of Bedrooms",
+    fill = "?"
   ) +
   global_theme +
   ggtitle("Unsupervised Data: House Listings") +
-  theme(legend.position = "none") +
-  expand_limits(x=c(800,2700), y=c(0.8,2.2))
-  #geom_path(data=df_ell, aes(x=x, y=y,colour=group), size=1, linetype=2)
-  #stat_ellipse(data=unsup_data %>% dplyr::filter(bedrooms <= 1))
+  #theme(legend.position = "none") +
+  #theme(legend.title = text_element("?"))
+  expand_limits(x=c(800,2700), y=c(0.8,2.2)) +
+  scale_fill_manual(values=c(cbPalette[3],cbPalette), labels=c("?","?"))
+  #scale_fill_manual(labels=c("?","?"))
 ```
 :::
+:::
 
-::::
+## The "Learning" in Machine Learning
+
+-   Given these datasets, how do we learn the patterns?
+-   Naïve idea: Try random lines (each forming a **decision boundary**), pick "best" one
+
+```{r, include=FALSE}
+x_min <- 0
+x_max <- 3000
+y_min <- -1
+y_max <- 3
+rand_y0 <- runif(50, min=y_min, max=y_max)
+rand_y1 <- runif(50, min=y_min, max=y_max)
+rand_slope <- (rand_y1 - rand_y0)/(x_max - x_min)
+rand_intercept <- rand_y0
+rand_lines <- tibble::tibble(id=1:50, slope=rand_slope, intercept=rand_intercept)
+ggplot() +
+  geom_abline(data=rand_lines, aes(slope=slope, intercept=intercept)) +
+  xlim(0,3000) +
+  ylim(0,2)
+```
+
+::: r-stack
+::: fragment
+```{r, fig.height=4.75}
+ggplot(sup_data, aes(x=sqft, y=bedrooms, color=rating)) + 
+  geom_point(size=g_pointsize) +
+  labs(
+    title = "The Like vs. Dislike Boundary: 50 Guesses",
+    x = "Square Footage",
+    y = "Number of Bedrooms",
+    color = "Outcome"
+  ) +
+  global_theme +
+  expand_limits(x=c(800,2700), y=c(0.8,2.2)) +
+  geom_abline(data=rand_lines, aes(slope=slope, intercept=intercept), linetype="dashed")
+```
+:::
+:::
+
+## What Makes a "Good"/"Best" Guess? 🤔
+
+- What's your intuition? How about accuracy...
+
+```{r}
+#base_plot <- ggplot(sup_data, aes(x=sqft, y=bedrooms, color=liked)) + 
+#  geom_point(size=g_pointsize) +
+#  labs(
+#    x = "Square Footage",
+#    y = "Number of Bedrooms",
+#    color = "Liked?"
+#  ) +
+#  global_theme +
+#  expand_limits(x=c(800,2700), y=c(0.8,2.2))
+
+line_data <- tibble::tribble(
+  ~id, ~slope, ~intercept,
+  0, 0, 0.75,
+  1, 0.00065, 0.5
+)
+data_range <- 800:2700
+ribbon_range <- c(-Inf,data_range,Inf)
+f1 <- function(x) { return(0*x + 0.75) }
+f1_data <- tibble::tibble(line_x=ribbon_range,line_y=c(Inf,f1(data_range),-Inf))
+g1_plot <- ggplot(data=(line_data %>% filter(id==0))) +
+  geom_abline(aes(slope=slope, intercept=intercept), linetype="dashed", size=1) +
+  ggtitle("Guess 1: 60% Accuracy") +
+  geom_point(data=sup_data, aes(x=sqft, y=bedrooms, color=rating), size=g_pointsize) +
+  geom_ribbon(data=f1_data, aes(x=line_x, ymin=-Inf, ymax=line_y, fill="Disliked"), alpha=0.2) +
+  geom_ribbon(data=f1_data, aes(x=line_x, ymin=line_y, ymax=Inf, fill="Liked"), alpha=0.2) +
+  labs(
+    x = "Square Footage",
+    y = "Number of Bedrooms",
+    color = "True Label"
+  ) +
+  global_theme +
+  expand_limits(x=data_range, y=c(0.8,2.2)) +
+  scale_fill_manual(values=c("Liked"="blue","Disliked"="red"), name="Guess")
+
+f2 <- function(x) { return(0.00065*x + 0.5) }
+f2_data <- tibble::tibble(line_x=ribbon_range,line_y=c(f2(710),f2(data_range),f2(Inf)))
+g2_plot <- ggplot(data=(line_data %>% filter(id==1))) +
+  geom_abline(aes(slope=slope, intercept=intercept), linetype="dashed", size=1) +
+  ggtitle("Guess 2: 60% Accuracy") +
+  geom_point(data=sup_data, aes(x=sqft, y=bedrooms, color=rating), size=g_pointsize) +
+  labs(
+    x = "Square Footage",
+    y = "Number of Bedrooms",
+    color = "True Label"
+  ) +
+  geom_ribbon(data=f2_data, aes(x=line_x, ymin=-Inf, ymax=line_y, fill="Liked"), alpha=0.2) +
+  geom_ribbon(data=f2_data, aes(x=line_x, ymin=line_y, ymax=Inf, fill="Disliked"), alpha=0.2) +
+  global_theme +
+  expand_limits(x=data_range, y=c(0.8,2.2)) +
+  scale_fill_manual(values=c("Liked"="blue","Disliked"="red"), name="Guess")
+
+g1_plot + g2_plot
+```
+So... what's wrong here?
+
+## What's Wrong with Accuracy?
+
+```{r}
+#base_plot <- ggplot(sup_data, aes(x=sqft, y=bedrooms, color=liked)) + 
+#  geom_point(size=g_pointsize) +
+#  labs(
+#    x = "Square Footage",
+#    y = "Number of Bedrooms",
+#    color = "Liked?"
+#  ) +
+#  global_theme +
+#  expand_limits(x=c(800,2700), y=c(0.8,2.2))
+
+gen_homes <- function(n) {
+  rand_sqft <- runif(n, min=2000, max=3000)
+  rand_bedrooms <- sample(c(1,2), size=n, prob=c(0.5,0.5), replace=TRUE)
+  rand_ids <- 1:n
+  rand_rating <- "Liked"
+  rand_tibble <- tibble::tibble(home_id=rand_ids, sqft=rand_sqft, bedrooms=rand_bedrooms, rating=rand_rating)
+  return(rand_tibble)
+}
+fake_homes <- gen_homes(18)
+fake_sup_data <- dplyr::bind_rows(sup_data, fake_homes)
+line_data <- tibble::tribble(
+  ~id, ~slope, ~intercept,
+  0, 0, 0.75,
+  1, 0.00065, 0.5
+)
+f1 <- function(x) { return(0*x + 0.75) }
+f2 <- function(x) { return(0.00065*x + 0.5) }
+# And check accuracy
+fake_sup_data <- fake_sup_data %>% mutate(boundary1=f1(sqft)) %>% mutate(guessDislike1 = bedrooms < boundary1) %>% mutate(correct1 = ((rating=="Disliked") & (guessDislike1)) | (rating=="Liked") & (!guessDislike1))
+fake_sup_data <- fake_sup_data %>% mutate(boundary2=f2(sqft)) %>% mutate(guessDislike2 = bedrooms > boundary2) %>% mutate(correct2 = ((rating=="Disliked") & (guessDislike2)) | (rating=="Liked") & (!guessDislike2))
+
+data_range <- 800:2700
+ribbon_range <- c(-Inf,data_range,Inf)
+
+f1_data <- tibble::tibble(line_x=ribbon_range,line_y=c(f1(700),f1(data_range),f1(3200)))
+g1_plot <- ggplot(data=(line_data %>% filter(id==0))) +
+  geom_abline(aes(slope=slope, intercept=intercept), linetype="dashed", size=1) +
+  ggtitle("Guess 1: 91.3% Accuracy") +
+  geom_point(data=fake_sup_data, aes(x=sqft, y=bedrooms, fill=rating, color=rating, shape=factor(correct1, levels=c(TRUE,FALSE))), size=g_pointsize) +
+  scale_shape_manual(values=c(24, 25)) +
+  geom_ribbon(data=f1_data, aes(x=line_x, ymin=-Inf, ymax=line_y, fill="Disliked"), alpha=0.2) +
+  geom_ribbon(data=f1_data, aes(x=line_x, ymin=line_y, ymax=Inf, fill="Liked"), alpha=0.2) +
+  labs(
+    x = "Square Footage",
+    y = "Number of Bedrooms",
+    color = "True Label",
+    shape = "Correct Guess"
+  ) +
+  global_theme +
+  expand_limits(x=data_range, y=c(0.8,2.2)) +
+  scale_fill_manual(values=c("Liked"="blue","Disliked"="red"), name="Guess")
+
+
+f2_data <- tibble::tibble(line_x=ribbon_range,line_y=c(f2(700),f2(data_range),f2(3100)))
+g2_plot <- ggplot(data=(line_data %>% filter(id==1))) +
+  geom_abline(aes(slope=slope, intercept=intercept), linetype="dashed", size=1) +
+  ggtitle("Guess 2: 73.9% Accuracy") +
+  geom_point(data=fake_sup_data, aes(x=sqft, y=bedrooms, fill=rating, color=rating, shape=factor(correct2, levels=c(TRUE,FALSE))), size=g_pointsize) +
+  scale_shape_manual(values=c(24, 25)) +
+  labs(
+    x = "Square Footage",
+    y = "Number of Bedrooms",
+    color = "True Label",
+    shape = "Correct Guess"
+  ) +
+  geom_ribbon(data=f2_data, aes(x=line_x, ymin=-Inf, ymax=line_y, fill="Liked"), alpha=0.2) +
+  geom_ribbon(data=f2_data, aes(x=line_x, ymin=line_y, ymax=Inf, fill="Disliked"), alpha=0.2) +
+  global_theme +
+  expand_limits(x=data_range, y=c(0.8,2.2)) +
+  scale_fill_manual(values=c("Liked"="blue","Disliked"="red"), name="Guess")
+
+g1_plot + g2_plot
+```
+
+## Measuring Errors: F1 Score
+
+- How can we reward guesses which best *discriminate* between classes?
+
+$$
+\begin{align*}
+\mathsf{Precision} &= \frac{\# \text{true positives}}{\# \text{predicted positive}} = \frac{tp}{tp+fp} \\[1.5em]
+\mathsf{Recall} &= \frac{\# \text{true positives}}{\# \text{positives in data}} = \frac{tp}{tp+fn} \\[1.5em]
+F_1 &= 2\frac{\mathsf{Precision} \cdot \mathsf{Recall}}{\mathsf{Precision} + \mathsf{Recall}} = \mathsf{HMean}(\mathsf{Precision}, \mathsf{Recall})
+\end{align*}
+$$
+
+- How does this fix the issue with accuracy?
+
+::: {.aside}
+\f* $\mathsf{HMean}$ is the **harmonic mean**, an alternative to the standard (arithmetic) mean that penalizes greater "gaps" between precision and recall: if precision is 0 and recall is 1, for example, their *arithmetic* mean is 0.5 while their harmonic mean is 0. For the curious: given numbers $X = \{x_1, \ldots, x_n\}$, $\mathsf{HMean}(X) = \frac{n}{\sum_{i=1}^nx_i^{-1}}$
+:::
+
+## Measuring Errors: The Loss Function
+
+- What about the regression case?
+    - We can no longer just say "true prediction good, false prediction bad"
+- We have to quantify **how bad** the guess is!
+    - Then we can scale the penalty accordingly: $penalty \propto badness$
+- Some common loss functions
+$$
+\mathcal{L}(y_{pred}, y_{obs}) = (y_{pred} - y_{obs})^2
+$$
+
+## Calculus Rears its Ugly Head
+
+- Neural networks use **gradient descent** and **backpropagation** to improve their predictions given a particular loss function.
+- Can we just use the $F_1$ score?
+$$
+\frac{\partial F_1(weights)}{\partial weights} = \ldots \; ? \; \ldots 💀
+$$
+
+## Quantifying Discrete Loss
+
+- We can quantify a differentiable **discrete** loss by asking the algorithm *how confident* it is
+    - Closer to 0 $\implies$ more confident that the true label is 0
+    - Closer to 1 $\implies$ more confident that the true label is 1
+$$
+\mathcal{L}_{CE}(y_{pred}, y_{obs}) = -(y_{obs}\log(y_{pred}) + (1-y_{obs})\log(1-y_{pred}))
+$$
+```{r}
+y_pred <- seq(from = 0, to = 1, by = 0.001)
+compute_ce <- function(y_p, y_o) { return(-(y_o * log(y_p) + (1-y_o)*log(1-y_p))) }
+ce0 <- compute_ce(y_pred, 0)
+ce1 <- compute_ce(y_pred, 1)
+ce0_data <- tibble::tibble(y_pred=y_pred, y_obs=0, ce=ce0)
+ce1_data <- tibble::tibble(y_pred=y_pred, y_obs=1, ce=ce1)
+ce_data <- dplyr::bind_rows(ce0_data, ce1_data)
+ggplot(ce_data, aes(x=y_pred, y=ce, color=factor(y_obs))) +
+  geom_line(linewidth=1) +
+  labs(
+    title="Binary Cross-Entropy Loss",
+    x = "Predicted Value",
+    y = "Loss",
+    color = "Actual Value"
+  ) +
+  global_theme +
+  ylim(0,6)
+```
+
+## Good and Bad News
+
+::: columns
+::: {.column width="50%"}
+
+* Universal Approximation Theorem
+    - Neural networks can represent any function mapping one Euclidean space to another
+    - Neural Turing Machines:
+
+<center>
+![](NTM_Schematic.png){width="50%"}
+</center>
+
+:::
+
+::: {.column width="50%}
+
+::: {.smallmath}
+* Weierstrass Approximation Theorem
+    - Polynomials already could represent any function
+$$
+f \in C([a,b],[a,b])
+$$
+$$
+\implies \forall \epsilon > 0, \exists p \in \mathbb{R}[x] :
+$$
+$$
+\forall x \in [a, b] \; \left|f(x) − p(x)\right| < \epsilon
+$$
+:::
+
+<center>
+![](Overfitting.svg){width="50%"}
+</center>
+
+:::
+:::
+
+## Regularization
 
 ## Cross-Validation
 
-
-
 ## Model
 
-## Loss Functions and Error Measures
 
-## Regularization
 
 ## Numerical Optimization
 
