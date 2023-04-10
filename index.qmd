@@ -898,7 +898,7 @@ cor(ski_df$value, law_df$value)
 </center>
 
 * Meanwhile, social scientists are increasingly incorporating *prediction* tasks into their *explanatory* models
-    * [Double Machine Learning](https://arxiv.org/abs/1608.00060) approach to estimating causal effects
+    * [Double Machine Learning](https://arxiv.org/abs/1608.00060) approach to estimating causal effects [@chernozhukov_double_2018]
     * Microsoft's [EconML](https://www.microsoft.com/en-us/research/project/econml/)
 
 <center>
