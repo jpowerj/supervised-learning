@@ -35,13 +35,29 @@ tbody > tr:hover {
 }
 
 .smaller-lines ul {
-  line-height: 1;
+  line-height: 1.1!important;
+  margin-bottom: 8px!important;
 }
 
 .smaller-lines li {
   margin-top: 0.2em!important;
 }
 
+.smaller-lines img#math {
+  max-width: 70%!important;
+  height: auto!important;
+}
+
+.smaller-lines img#goog {
+  max-width: 68%!important;
+  height: auto!important;
+}
+
 .shorter-svg {
   height: 20%;
+}
+
+img#ntm {
+  max-width=50%!important;
+  margin-top: 0!important;
 }

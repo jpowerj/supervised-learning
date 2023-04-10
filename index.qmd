@@ -1,5 +1,6 @@
 ---
 title: "Supervised Learning with Parametric Models"
+subtitle: "Georgetown University, April 2023"
 author: "Jeff Jacobs"
 format:
   revealjs:
@@ -12,6 +13,9 @@ format:
 editor: visual
 toc: false
 number-sections: false
+bibliography: Georgetown_Refs.bib
+nocite: |
+  @*
 ---
 
 ```{r setup, include=FALSE}
@@ -24,7 +28,7 @@ library(patchwork)
 cbPalette <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 options(ggplot2.discrete.colour= cbPalette)
 global_theme <- ggplot2::theme_classic() + ggplot2::theme(
-  plot.title = element_text(hjust = 0.5, size = 18),
+  plot.title = element_text(hjust = 0.5, size = 16),
   axis.title = element_text(size = 14),
   axis.text = element_text(size = 12),
   legend.title = element_text(size = 14, hjust = 0.5),
@@ -52,7 +56,7 @@ get_rss <- function(model) { return(sum(summary(model)$residuals^2)) }
 -   **Unsupervised** Learning: You want the computer to *find* patterns in a dataset, without any classification info
     -   Typically: grouping or clustering observations based on shared properties
     -   Example (*Clustering*): I save all the used car listings I can find, and ask the computer to "find a pattern" in this data, by clustering similar cars together
-    -   ["Exploratory" Data Analysis](https://www.ibm.com/topics/exploratory-data-analysis)
+    -   ["Exploratory" Data Analysis](https://www.ibm.com/topics/exploratory-data-analysis) [@tukey_exploratory_1977]
 :::
 :::
 
@@ -466,8 +470,12 @@ $$
 * (Neural Turing Machines:)
 
 <center>
-![](NTM_Schematic.png){width="50%"}
+![](NTM_Schematic.png){#ntm width="50%"}
 </center>
+
+::: {.aside}
+Figure from @schmidinger_exploring_2019
+:::
 
 :::
 
@@ -655,17 +663,23 @@ $$
 \mathsf{Complexity} \propto \frac{|\text{AmplifiedFeatures}|}{|\text{ShrunkFeatures}|}
 $$
 
-## LASSO Regression
+## LASSO and Elastic Net Regularization
 
 - Many ways to translate this intuition into math!
-- In several fields, however (econ, biostatistics), LASSO^[**L**east **A**bsolute **S**hrinkage and **S**election **O**perator] is most popular:
+- In several fields, however (econ, biostatistics), LASSO^[**L**east **A**bsolute **S**hrinkage and **S**election **O**perator] [@tibshirani_regression_1996] is standard:
 
 $$
-\beta^* = \min _{\beta \in \mathbb {R} ^{p}}\left\{{\frac {1}{N}}\left\|y-X\beta \right\|_{2}^{2}+\lambda \|\beta \|_{1}\right\}
+\beta^*_{LASSO} = {\underset{\beta}{\operatorname{argmin}}}\left\{{\frac {1}{N}}\left\|y-X\beta \right\|_{2}^{2}+\lambda \|\beta \|_{1}\right\}
 $$
 
-- Why does this work to penalize complexity?
-- What does the parameter $\lambda$ do?
+- Why does this work to penalize complexity? What does the parameter $\lambda$ do?
+- Some known issues with LASSO fixed in extension of the same intuitions: **Elastic Net**
+
+$$
+\beta^*_{EN} = {\underset {\beta }{\operatorname {argmin} }}\left\{ \|y-X\beta \|^{2}_2+\lambda _{2}\|\beta \|^{2}+\lambda _{1}\|\beta \|_{1} \right\}
+$$
+
+* (Ensures a unique global minimum! Note that $\lambda_2 = 0, \lambda_1 = 1 \implies \beta^*_{LASSO} = \beta^*_{EN}$)
 
 ## Training vs. Test Data
 
@@ -705,55 +719,205 @@ graph grid
 - The idea that **good models generalize well** is crucial!
   - What if we could leverage this insight to optimize **over our training data**?
   - The key: **Validation Sets**
+
+```{dot}
+//| fig-height: 3
+graph grid
+{
+    graph [
+        overlap=true,
+        scale=0.2
+    ]
+    nodesep=0.0
+    ranksep=0.0
+    rankdir="LR"
+    scale=0.2
+    node [
+        style="filled",
+        color=black,
+        fillcolor=lightblue,
+        shape=box
+    ]
+
+	// uncomment to hide the grid
+	edge [style=invis]
+	
+	subgraph cluster_01 {
+	    label="Training Set (80%)"
+	    subgraph cluster_02 {
+	        label="Training Fold (80%)"
+	        A1[label="16%"] A2[label="16%"] A3[label="16%"] A4[label="16%"]
+	    }
+	    subgraph cluster_03 {
+	        label="Validation Fold (20%)"
+	        B1[label="16%",fillcolor=lightgreen]
+	    }
+	}
+	subgraph cluster_04 {
+	    label="Test Set (20%)"
+	C1[label="20%",fillcolor=orange]
+	}
+	A1 -- A2 -- A3 -- A4 -- B1 -- C1;
+}
+```
+
+## Hyperparameters
+
+* The unspoken (but highly consequential!) "settings" for our learning procedure (that we *haven't* optimized via gradient descent)
+* There are several we've already seen -- can you name them?
+
+::: {.fragment}
+
+* Unsupervised Clustering: The number of clusters we want ($K$)
+* Gradient Descent: The **step size** $\gamma$
+* LASSO/Elastic Net: $\lambda$
+* The train/validation/test split!
+
+:::
+
+## Hyperparameter Selection
+
+* Every model comes with its own hyperparameters:
+    * Neural Networks: Number of layers, number of nodes per layer
+    * Decision Trees: Maximum tree depth, max number of features to include
+    * Topic Models: Number of topics, document/topic **priors**
+    
+* So, how do we choose?
+    * Often more art than science
+    * Principled, universally applicable, but slow: grid search
+    * Specific methods for specific algorithms: ADAM [@kingma_adam_2017] for Neural Network learning rates)
+
+## ...Now What?
+
+* So we've got a trained model...
+  * Data collected ✅
+  * Loss function chosen ✅
+  * Gradient descent complete ✅
+  * Hyperparameters tuned ✅
+  * Good $F_1$ score on test data ✅
+* What's our next step?
+  * This is where **engineers** and **social scientists** diverge...
   
-<svg width="960" height="400" viewBox="0.00 0.00 491.00 142.00" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style=" display: block; margin: auto auto auto auto">
-<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 138)">
-<title>
-grid
-</title>
-<polygon fill="white" stroke="transparent" points="-4,4 -4,-138 487,-138 487,4 -4,4"></polygon> <g id="clust1" class="cluster">
-<title>
-cluster_01
-</title>
-<polygon fill="none" stroke="black" points="8,-8 8,-126 376,-126 376,-8 8,-8"></polygon> <text text-anchor="middle" x="192" y="-109.4" font-family="Times,serif" font-size="14.00">Training Set (80%)</text> </g> <g id="clust3" class="cluster">
-<title>
-cluster_03
-</title>
-<polygon fill="none" stroke="black" points="226,-16 226,-93 368,-93 368,-16 226,-16"></polygon> <text text-anchor="middle" x="297" y="-76.4" font-family="Times,serif" font-size="14.00">Validation Fold (25%)</text> </g> <g id="clust2" class="cluster">
-<title>
-cluster_02
-</title>
-<polygon fill="none" stroke="black" points="16,-16 16,-93 210,-93 210,-16 16,-16"></polygon> <text text-anchor="middle" x="113" y="-76.4" font-family="Times,serif" font-size="14.00">Training Fold (75%)</text> </g> <g id="clust4" class="cluster">
-<title>
-cluster_04
-</title>
-<polygon fill="none" stroke="black" points="384,-16 384,-93 483,-93 483,-16 384,-16"></polygon> <text text-anchor="middle" x="433.5" y="-76.4" font-family="Times,serif" font-size="14.00">Test Set (20%)</text> </g> <!-- A1 --> <g id="node1" class="node">
-<title>
-A1
-</title>
-<polygon fill="lightblue" stroke="black" points="78,-60 24,-60 24,-24 78,-24 78,-60"></polygon> <text text-anchor="middle" x="51" y="-37.8" font-family="Times,serif" font-size="14.00">20%</text> </g> <!-- A2 --> <g id="node2" class="node">
-<title>
-A2
-</title>
-<polygon fill="lightblue" stroke="black" points="140,-60 86,-60 86,-24 140,-24 140,-60"></polygon> <text text-anchor="middle" x="113" y="-37.8" font-family="Times,serif" font-size="14.00">20%</text> </g> <!-- A1&#45;&#45;A2 --> <!-- A3 --> <g id="node3" class="node">
-<title>
-A3
-</title>
-<polygon fill="lightblue" stroke="black" points="202,-60 148,-60 148,-24 202,-24 202,-60"></polygon> <text text-anchor="middle" x="175" y="-37.8" font-family="Times,serif" font-size="14.00">20%</text> </g> <!-- A2&#45;&#45;A3 --> <!-- B1 --> <g id="node4" class="node">
-<title>
-B1
-</title>
-<polygon fill="lightgreen" stroke="black" points="324,-60 270,-60 270,-24 324,-24 324,-60"></polygon> <text text-anchor="middle" x="297" y="-37.8" font-family="Times,serif" font-size="14.00">20%</text> </g> <!-- A3&#45;&#45;B1 --> <!-- C1 --> <g id="node5" class="node">
-<title>
-C1
-</title>
-<polygon fill="orange" stroke="black" points="460,-60 406,-60 406,-24 460,-24 460,-60"></polygon> <text text-anchor="middle" x="433" y="-37.8" font-family="Times,serif" font-size="14.00">20%</text> </g> <!-- B1&#45;&#45;C1 --> </g>
-</svg>
+## Prediction vs. Explanation: Prediction {.smaller-lines}
 
-## Hyperparameter Tuning
+* Intro CS courses: Prediction
+    * [Netflix Prize](https://en.wikipedia.org/wiki/Netflix_Prize): Predict a user's next rating given previous ratings
+    * Neural networks: They just, like, **work**! (ChatGPT, Google Translate, ...)
 
-## Prediction
+<center>
+![](google_translate_crop2.png){#goog}
+</center>
+
+::: {.aside}
+Source: [TechCrunch, Nov. 22, 2016.](https://techcrunch.com/2016/11/22/googles-ai-translation-tool-seems-to-have-invented-its-own-secret-internal-language/)
+:::
+
+## Prediction vs. Explanation: Explanation
+
+* Intro Social Science courses: Explanation
+    * Criteria for success: What does this parameter **mean**? Is it **statistically significant**? What is the **mechanism**?
+
+```{r}
+ga_lawyers <- c(21362, 22254, 23134, 23698, 24367, 24930, 25632, 26459, 27227, 27457)
+ski_df <- tibble::tribble(
+  ~year, ~varname, ~value,
+  2000, "ski_revenue", 1551,
+  2001, "ski_revenue", 1635,
+  2002, "ski_revenue", 1801,
+  2003, "ski_revenue", 1827,
+  2004, "ski_revenue", 1956,
+  2005, "ski_revenue", 1989,
+  2006, "ski_revenue", 2178,
+  2007, "ski_revenue", 2257,
+  2008, "ski_revenue", 2476,
+  2009, "ski_revenue", 2438,
+)
+ski_mean <- mean(ski_df$value)
+ski_sd <- sd(ski_df$value)
+ski_df <- ski_df %>% mutate(val_scaled = 12*value, val_norm = (value - ski_mean)/ski_sd)
+law_df <- tibble::tibble(year=2000:2009, varname="ga_lawyers", value=ga_lawyers)
+law_mean <- mean(law_df$value)
+law_sd <- sd(law_df$value)
+law_df <- law_df %>% mutate(val_norm = (value - law_mean)/law_sd)
+spur_df <- dplyr::bind_rows(ski_df, law_df)
+ggplot(spur_df, aes(x=year, y=val_norm, color=factor(varname, labels = c("Ski Revenue","Lawyers in Georgia")))) +
+  stat_smooth(method="loess", se=FALSE) +
+  geom_point(size=g_pointsize/4) +
+  labs(
+    fill="",
+    title="Ski Revenue vs. Georgia Lawyers",
+    x="Year",
+    color="Correlation: 99.2%",
+    linetype=NULL
+  ) +
+  global_theme +
+  scale_x_continuous(
+    breaks=seq(from=2000, to=2014, by=2)
+  ) +
+  #scale_y_continuous(
+  #  name="Total Revenue, Ski Facilities (Million USD)",
+  #  sec.axis = sec_axis(~ . * law_sd + law_mean, name = "Number of Lawyers in Georgia")
+  #) +
+  scale_y_continuous(breaks = -1:1,
+    labels = ~ . * round(ski_sd,1) + round(ski_mean,1),
+    name="Total Revenue, Ski Facilities (Million USD)",
+    sec.axis = sec_axis(~ . * law_sd + law_mean, name = "Number of Lawyers in Georgia")) +
+  expand_limits(x=2010) +
+  #geom_hline(aes(yintercept=x, color="Mean Values"), as.data.frame(list(x=0)), linewidth=0.75, alpha=1.0, show.legend = TRUE) +
+  scale_color_manual(breaks=c('Ski Revenue', 'Lawyers in Georgia'),
+                     values=c('Ski Revenue'=cbPalette[1], 'Lawyers in Georgia'=cbPalette[2]))
+```
+
+```{r,echo=TRUE}
+cor(ski_df$value, law_df$value)
+```
+
+## A Symbiotic Relationship {.smaller-lines}
+
+::: columns
+
+::: {.column width="50%"}
+
+<center>
+**Engineering**
+</center>
+
+* Computer scientists: great strides in **explainable** machine learning
+    * [Fairness and Transparency in Machine Learning (FAT-ML)](https://www.fatml.org/) conference
+
+<center>
+![](math_destruction.jpg){#math}
+</center>
+
+:::
+
+::: {.column width="50%"}
+
+<center>
+**Social Science**
+</center>
+
+* Meanwhile, social scientists are increasingly incorporating *prediction* tasks into their *explanatory* models
+    * [Double Machine Learning](https://arxiv.org/abs/1608.00060) approach to estimating causal effects
+    * Microsoft's [EconML](https://www.microsoft.com/en-us/research/project/econml/)
+
+<center>
+![](econML.png)
+</center>
+
+:::
+
+:::
 
 ## Lab
 
+* Download data: 
+* Train neural net
+* Best predictor wins a prize!
+
 ## Q & A
+
+## References
+
+::: {#refs}
+:::

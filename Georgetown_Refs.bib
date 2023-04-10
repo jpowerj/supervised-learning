@@ -1,0 +1,113 @@
+@article{chernozhukov_double_2018,
+  title = {Double/Debiased Machine Learning for Treatment and Structural Parameters},
+  author = {Chernozhukov, Victor and Chetverikov, Denis and Demirer, Mert and Duflo, Esther and Hansen, Christian and Newey, Whitney and Robins, James},
+  year = {2018},
+  month = feb,
+  journal = {The Econometrics Journal},
+  volume = {21},
+  number = {1},
+  pages = {C1-C68},
+  issn = {1368-4221},
+  doi = {10.1111/ectj.12097},
+  urldate = {2023-04-10},
+  abstract = {We revisit the classic semi-parametric problem of inference on a low-dimensional parameter \texttheta 0 in the presence of high-dimensional nuisance parameters {$\eta$}0. We depart from the classical setting by allowing for {$\eta$}0 to be so high-dimensional that the traditional assumptions (e.g. Donsker properties) that limit complexity of the parameter space for this object break down. To estimate {$\eta$}0, we consider the use of statistical or machine learning (ML) methods, which are particularly well suited to estimation in modern, very high-dimensional cases. ML methods perform well by employing regularization to reduce variance and trading off regularization bias with overfitting in practice. However, both regularization bias and overfitting in estimating {$\eta$}0 cause a heavy bias in estimators of \texttheta 0 that are obtained by naively plugging ML estimators of {$\eta$}0 into estimating equations for \texttheta 0. This bias results in the naive estimator failing to be N-1/2 consistent, where N is the sample size. We show that the impact of regularization bias and overfitting on estimation of the parameter of interest \texttheta 0 can be removed by using two simple, yet critical, ingredients: (1) using Neyman-orthogonal moments/scores that have reduced sensitivity with respect to nuisance parameters to estimate \texttheta 0; (2) making use of cross-fitting, which provides an efficient form of data-splitting. We call the resulting set of methods double or debiased ML (DML). We verify that DML delivers point estimators that concentrate in an N-1/2-neighbourhood of the true parameter values and are approximately unbiased and normally distributed, which allows construction of valid confidence statements. The generic statistical theory of DML is elementary and simultaneously relies on only weak theoretical requirements, which will admit the use of a broad array of modern ML methods for estimating the nuisance parameters, such as random forests, lasso, ridge, deep neural nets, boosted trees, and various hybrids and ensembles of these methods. We illustrate the general theory by applying it to provide theoretical properties of the following: DML applied to learn the main regression parameter in a partially linear regression model; DML applied to learn the coefficient on an endogenous variable in a partially linear instrumental variables model; DML applied to learn the average treatment effect and the average treatment effect on the treated under unconfoundedness; DML applied to learn the local average treatment effect in an instrumental variables setting. In addition to these theoretical applications, we also illustrate the use of DML in three empirical examples.},
+  file = {C\:\\Users\\jpjac\\Zotero\\storage\\D96NFBCV\\Chernozhukov et al. - 2018 - Doubledebiased machine learning for treatment and.pdf}
+}
+
+@book{hastie_elements_2013,
+  title = {The {{Elements}} of {{Statistical Learning}}: {{Data Mining}}, {{Inference}}, and {{Prediction}}},
+  shorttitle = {The {{Elements}} of {{Statistical Learning}}},
+  author = {Hastie, Trevor and Tibshirani, Robert and Friedman, Jerome},
+  year = {2013},
+  month = nov,
+  publisher = {{Springer Science \& Business Media}},
+  abstract = {During the past decade there has been an explosion in computation and information technology. With it have come vast amounts of data in a variety of fields such as medicine, biology, finance, and marketing. The challenge of understanding these data has led to the development of new tools in the field of statistics, and spawned new areas such as data mining, machine learning, and bioinformatics. Many of these tools have common underpinnings but are often expressed with different terminology. This book describes the important ideas in these areas in a common conceptual framework. While the approach is statistical, the emphasis is on concepts rather than mathematics. Many examples are given, with a liberal use of color graphics. It is a valuable resource for statisticians and anyone interested in data mining in science or industry. The book's coverage is broad, from supervised learning (prediction) to unsupervised learning. The many topics include neural networks, support vector machines, classification trees and boosting---the first comprehensive treatment of this topic in any book. This major new edition features many topics not covered in the original, including graphical models, random forests, ensemble methods, least angle regression \& path algorithms for the lasso, non-negative matrix factorization, and spectral clustering. There is also a chapter on methods for ``wide'' data (p bigger than n), including multiple testing and false discovery rates. Trevor Hastie, Robert Tibshirani, and Jerome Friedman are professors of statistics at Stanford University. They are prominent researchers in this area: Hastie and Tibshirani developed generalized additive models and wrote a popular book of that title. Hastie co-developed much of the statistical modeling software and environment in R/S-PLUS and invented principal curves and surfaces. Tibshirani proposed the lasso and is co-author of the very successful An Introduction to the Bootstrap. Friedman is the co-inventor of many data-mining tools including CART, MARS, projection pursuit and gradient boosting.},
+  googlebooks = {yPfZBwAAQBAJ},
+  isbn = {978-0-387-21606-5},
+  langid = {english},
+  keywords = {Computers / Artificial Intelligence / General,Computers / Database Administration \& Management,Computers / Mathematical \& Statistical Software,Mathematics / Discrete Mathematics,Mathematics / Probability \& Statistics / General,Mathematics / Probability \& Statistics / Stochastic Processes,Science / Life Sciences / Biology,Science / Life Sciences / General}
+}
+
+@misc{kingma_adam_2017,
+  title = {Adam: {{A Method}} for {{Stochastic Optimization}}},
+  shorttitle = {Adam},
+  author = {Kingma, Diederik P. and Ba, Jimmy},
+  year = {2017},
+  month = jan,
+  number = {arXiv:1412.6980},
+  eprint = {arXiv:1412.6980},
+  publisher = {{arXiv}},
+  doi = {10.48550/arXiv.1412.6980},
+  urldate = {2023-04-10},
+  abstract = {We introduce Adam, an algorithm for first-order gradient-based optimization of stochastic objective functions, based on adaptive estimates of lower-order moments. The method is straightforward to implement, is computationally efficient, has little memory requirements, is invariant to diagonal rescaling of the gradients, and is well suited for problems that are large in terms of data and/or parameters. The method is also appropriate for non-stationary objectives and problems with very noisy and/or sparse gradients. The hyper-parameters have intuitive interpretations and typically require little tuning. Some connections to related algorithms, on which Adam was inspired, are discussed. We also analyze the theoretical convergence properties of the algorithm and provide a regret bound on the convergence rate that is comparable to the best known results under the online convex optimization framework. Empirical results demonstrate that Adam works well in practice and compares favorably to other stochastic optimization methods. Finally, we discuss AdaMax, a variant of Adam based on the infinity norm.},
+  archiveprefix = {arxiv},
+  keywords = {Computer Science - Machine Learning},
+  file = {C\:\\Users\\jpjac\\Zotero\\storage\\UP3UQYS7\\Kingma and Ba - 2017 - Adam A Method for Stochastic Optimization.pdf;C\:\\Users\\jpjac\\Zotero\\storage\\TLHMS66C\\1412.html}
+}
+
+@book{mcelreath_statistical_2020,
+  title = {Statistical {{Rethinking}}: {{A Bayesian Course}} with {{Examples}} in {{R}} and {{STAN}}},
+  shorttitle = {Statistical {{Rethinking}}},
+  author = {McElreath, Richard},
+  year = {2020},
+  month = mar,
+  publisher = {{CRC Press}},
+  abstract = {Statistical Rethinking: A Bayesian Course with Examples in R and Stan builds your knowledge of and confidence in making inferences from data. Reflecting the need for scripting in today's model-based statistics, the book pushes you to perform step-by-step calculations that are usually automated. This unique computational approach ensures that you understand enough of the details to make reasonable choices and interpretations in your own modeling work.  The text presents causal inference and generalized linear multilevel models from a simple Bayesian perspective that builds on information theory and maximum entropy. The core material ranges from the basics of regression to advanced multilevel models. It also presents measurement error, missing data, and Gaussian process models for spatial and phylogenetic confounding.  The second edition emphasizes the directed acyclic graph (DAG) approach to causal inference, integrating DAGs into many examples. The new edition also contains new material on the design of prior distributions, splines, ordered categorical predictors, social relations models, cross-validation, importance sampling, instrumental variables, and Hamiltonian Monte Carlo. It ends with an entirely new chapter that goes beyond generalized linear modeling, showing how domain-specific scientific models can be built into statistical analyses.  Features   Integrates working code into the main text   Illustrates concepts through worked data analysis examples   Emphasizes understanding assumptions and how assumptions are reflected in code   Offers more detailed explanations of the mathematics in optional sections   Presents examples of using the dagitty R package to analyze causal graphs   Provides the rethinking R package on the author's website and on GitHub},
+  googlebooks = {FuLWDwAAQBAJ},
+  isbn = {978-0-429-64231-9},
+  langid = {english},
+  keywords = {Mathematics / General,Mathematics / Probability \& Statistics / General,Science / Life Sciences / Biological Diversity}
+}
+
+@book{oneil_weapons_2016,
+  title = {Weapons of {{Math Destruction}}: {{How Big Data Increases Inequality}} and {{Threatens Democracy}}},
+  shorttitle = {Weapons of {{Math Destruction}}},
+  author = {O'Neil, Cathy},
+  year = {2016},
+  publisher = {{Crown}},
+  abstract = {Longlisted for the National Book Award | New York Times Bestseller  A former Wall Street quant sounds an alarm on the mathematical models that pervade modern life and threaten to rip apart our social fabric.  We live in the age of the algorithm. Increasingly, the decisions that affect our lives--where we go to school, whether we get a car loan, how much we pay for health insurance--are being made not by humans, but by mathematical models. In theory, this should lead to greater fairness: Everyone is judged according to the same rules, and bias is eliminated.  But as Cathy O'Neil reveals in this urgent and necessary book, the opposite is true. The models being used today are opaque, unregulated, and uncontestable, even when they're wrong. Most troubling, they reinforce discrimination: If a poor student can't get a loan because a lending model deems him too risky (by virtue of his zip code), he's then cut off from the kind of education that could pull him out of poverty, and a vicious spiral ensues. Models are propping up the lucky and punishing the downtrodden, creating a "toxic cocktail for democracy." Welcome to the dark side of Big Data.  Tracing the arc of a person's life, O'Neil exposes the black box models that shape our future, both as individuals and as a society. These "weapons of math destruction" score teachers and students, sort r\'esum\'es, grant (or deny) loans, evaluate workers, target voters, set parole, and monitor our health.  O'Neil calls on modelers to take more responsibility for their algorithms and on policy makers to regulate their use. But in the end, it's up to us to become more savvy about the models that govern our lives. This important book empowers us to ask the tough questions, uncover the truth, and demand change.},
+  isbn = {978-0-553-41881-1},
+  langid = {english},
+  keywords = {BUSINESS \& ECONOMICS / Statistics,SOCIAL SCIENCE / Privacy \& Surveillance}
+}
+
+@article{schmidinger_exploring_2019,
+  title = {Exploring {{Neural Turing Machines}}},
+  shorttitle = {Niklas {{Schmidinger}}},
+  author = {Schmidinger, Niklas},
+  year = {2019},
+  month = dec,
+  journal = {Johannes Kepler University Blog},
+  urldate = {2023-04-10},
+  abstract = {End-to-end differentiable memory through attention mechanisms.},
+  file = {C\:\\Users\\jpjac\\Zotero\\storage\\WKDFP75M\\2019-12-25-neural-turing-machines.html}
+}
+
+@article{tibshirani_regression_1996,
+  title = {Regression {{Shrinkage}} and {{Selection}} via the {{Lasso}}},
+  author = {Tibshirani, Robert},
+  year = {1996},
+  journal = {Journal of the Royal Statistical Society. Series B (Methodological)},
+  volume = {58},
+  number = {1},
+  eprint = {2346178},
+  eprinttype = {jstor},
+  pages = {267--288},
+  publisher = {{[Royal Statistical Society, Wiley]}},
+  issn = {0035-9246},
+  urldate = {2023-04-10},
+  abstract = {We propose a new method for estimation in linear models. The `lasso' minimizes the residual sum of squares subject to the sum of the absolute value of the coefficients being less than a constant. Because of the nature of this constraint it tends to produce some coefficients that are exactly 0 and hence gives interpretable models. Our simulation studies suggest that the lasso enjoys some of the favourable properties of both subset selection and ridge regression. It produces interpretable models like subset selection and exhibits the stability of ridge regression. There is also an interesting relationship with recent work in adaptive function estimation by Donoho and Johnstone. The lasso idea is quite general and can be applied in a variety of statistical models: extensions to generalized regression models and tree-based models are briefly described.}
+}
+
+@book{tukey_exploratory_1977,
+  title = {Exploratory {{Data Analysis}}},
+  author = {Tukey, John W.},
+  year = {1977},
+  publisher = {{Addison-Wesley Publishing Company}},
+  address = {{New York}},
+  abstract = {Scratching down numbers (stem-and-leaf); Schematic summaries (pictures and numbers); Easy re-expression; Effective comparison (including well-chosen expresion); Plots of relationship; Straightening out plots (using three points); Smoothing sequences; Optional sections for chapter 7; Parallel and wandering schematic plots; Delineations of batches of points; Using two-way analyses; Making two-way analyses; Advances fits; Three-way fits; Looking in two or more ways at batches of points; Counted fractions; Better smoothing; Counts in bin after bin; Product-ratio plots; Shapes of distribution; Mathematical distributions; Postscript.},
+  googlebooks = {UT9dAAAAIAAJ},
+  isbn = {978-0-201-07616-5},
+  langid = {english},
+  keywords = {Mathematics / Probability \& Statistics / General}
+}

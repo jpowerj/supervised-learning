@@ -1,0 +1,44 @@
+
+<svg width="960" height="400" viewBox="0.00 0.00 491.00 142.00" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style=" display: block; margin: auto auto auto auto">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 138)">
+<title>
+grid
+</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-138 487,-138 487,4 -4,4"></polygon> <g id="clust1" class="cluster">
+<title>
+cluster_01
+</title>
+<polygon fill="none" stroke="black" points="8,-8 8,-126 376,-126 376,-8 8,-8"></polygon> <text text-anchor="middle" x="192" y="-109.4" font-family="Times,serif" font-size="14.00">Training Set (80%)</text> </g> <g id="clust3" class="cluster">
+<title>
+cluster_03
+</title>
+<polygon fill="none" stroke="black" points="226,-16 226,-93 368,-93 368,-16 226,-16"></polygon> <text text-anchor="middle" x="297" y="-76.4" font-family="Times,serif" font-size="14.00">Validation Fold (25%)</text> </g> <g id="clust2" class="cluster">
+<title>
+cluster_02
+</title>
+<polygon fill="none" stroke="black" points="16,-16 16,-93 210,-93 210,-16 16,-16"></polygon> <text text-anchor="middle" x="113" y="-76.4" font-family="Times,serif" font-size="14.00">Training Fold (75%)</text> </g> <g id="clust4" class="cluster">
+<title>
+cluster_04
+</title>
+<polygon fill="none" stroke="black" points="384,-16 384,-93 483,-93 483,-16 384,-16"></polygon> <text text-anchor="middle" x="433.5" y="-76.4" font-family="Times,serif" font-size="14.00">Test Set (20%)</text> </g> <!-- A1 --> <g id="node1" class="node">
+<title>
+A1
+</title>
+<polygon fill="lightblue" stroke="black" points="78,-60 24,-60 24,-24 78,-24 78,-60"></polygon> <text text-anchor="middle" x="51" y="-37.8" font-family="Times,serif" font-size="14.00">20%</text> </g> <!-- A2 --> <g id="node2" class="node">
+<title>
+A2
+</title>
+<polygon fill="lightblue" stroke="black" points="140,-60 86,-60 86,-24 140,-24 140,-60"></polygon> <text text-anchor="middle" x="113" y="-37.8" font-family="Times,serif" font-size="14.00">20%</text> </g> <!-- A1&#45;&#45;A2 --> <!-- A3 --> <g id="node3" class="node">
+<title>
+A3
+</title>
+<polygon fill="lightblue" stroke="black" points="202,-60 148,-60 148,-24 202,-24 202,-60"></polygon> <text text-anchor="middle" x="175" y="-37.8" font-family="Times,serif" font-size="14.00">20%</text> </g> <!-- A2&#45;&#45;A3 --> <!-- B1 --> <g id="node4" class="node">
+<title>
+B1
+</title>
+<polygon fill="lightgreen" stroke="black" points="324,-60 270,-60 270,-24 324,-24 324,-60"></polygon> <text text-anchor="middle" x="297" y="-37.8" font-family="Times,serif" font-size="14.00">20%</text> </g> <!-- A3&#45;&#45;B1 --> <!-- C1 --> <g id="node5" class="node">
+<title>
+C1
+</title>
+<polygon fill="orange" stroke="black" points="460,-60 406,-60 406,-24 460,-24 460,-60"></polygon> <text text-anchor="middle" x="433" y="-37.8" font-family="Times,serif" font-size="14.00">20%</text> </g> <!-- B1&#45;&#45;C1 --> </g>
+</svg>

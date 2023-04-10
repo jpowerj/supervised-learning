@@ -92,6 +92,25 @@
     code span.va { color: #111111; } /* Variable */
     code span.vs { color: #20794d; } /* VerbatimString */
     code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+    div.csl-bib-body { }
+    div.csl-entry {
+      clear: both;
+    }
+    .hanging div.csl-entry {
+      margin-left:2em;
+      text-indent:-2em;
+    }
+    div.csl-left-margin {
+      min-width:2em;
+      float:left;
+    }
+    div.csl-right-inline {
+      margin-left:2em;
+      padding-left:1em;
+    }
+    div.csl-indent {
+      margin-left: 2em;
+    }
   </style>
   <link rel="stylesheet" href="index_files/libs/revealjs/dist/theme/quarto.css" id="theme">
   <link rel="stylesheet" href="gtown.css">
@@ -391,6 +410,7 @@
 
 <section id="title-slide" class="quarto-title-block center">
   <h1 class="title">Supervised Learning with Parametric Models</h1>
+  <p class="subtitle">Georgetown University, April 2023</p>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -420,7 +440,7 @@ Jeff Jacobs
 <ul>
 <li>Typically: grouping or clustering observations based on shared properties</li>
 <li>Example (<em>Clustering</em>): I save all the used car listings I can find, and ask the computer to “find a pattern” in this data, by clustering similar cars together</li>
-<li><a href="https://www.ibm.com/topics/exploratory-data-analysis">“Exploratory” Data Analysis</a></li>
+<li><a href="https://www.ibm.com/topics/exploratory-data-analysis">“Exploratory” Data Analysis</a> <span class="citation" data-cites="tukey_exploratory_1977">(<a href="#/references" role="doc-biblioref" onclick="">Tukey 1977</a>)</span></li>
 </ul></li>
 </ul>
 </div>
@@ -717,8 +737,9 @@ F_1 &amp;= 2\frac{\mathsf{Precision} \cdot \mathsf{Recall}}{\mathsf{Precision} +
 <li>(Neural Turing Machines:)</li>
 </ul>
 <center>
-<img data-src="NTM_Schematic.png" style="width:50.0%">
+<img data-src="NTM_Schematic.png" id="ntm" style="width:50.0%">
 </center>
+
 </div><div class="column" style="width:&quot;50%;">
 <ul>
 <li>Weierstrass Approximation Theorem</li>
@@ -736,7 +757,9 @@ f \in C([a,b],[a,b])
 </ul>
 </div>
 </div>
-</section>
+<aside><div>
+<p>Figure from <span class="citation" data-cites="schmidinger_exploring_2019">Schmidinger (<a href="#/references" role="doc-biblioref" onclick="">2019</a>)</span></p>
+</div></aside></section>
 <section id="so-whats-the-issue" class="slide level2">
 <h2>So What’s the Issue?</h2>
 <div class="columns">
@@ -875,18 +898,24 @@ f \in C([a,b],[a,b])
 \mathsf{Complexity} \propto \frac{|\text{AmplifiedFeatures}|}{|\text{ShrunkFeatures}|}
 \]</span></p>
 </section>
-<section id="lasso-regression" class="slide level2">
-<h2>LASSO Regression</h2>
+<section id="lasso-and-elastic-net-regularization" class="slide level2">
+<h2>LASSO and Elastic Net Regularization</h2>
 <ul>
 <li>Many ways to translate this intuition into math!</li>
-<li>In several fields, however (econ, biostatistics), LASSO<sup>1</sup> is most popular:</li>
+<li>In several fields, however (econ, biostatistics), LASSO<sup>1</sup> <span class="citation" data-cites="tibshirani_regression_1996">(<a href="#/references" role="doc-biblioref" onclick="">Tibshirani 1996</a>)</span> is standard:</li>
 </ul>
 <p><span class="math display">\[
-\beta^* = \min _{\beta \in \mathbb {R} ^{p}}\left\{{\frac {1}{N}}\left\|y-X\beta \right\|_{2}^{2}+\lambda \|\beta \|_{1}\right\}
+\beta^*_{LASSO} = {\underset{\beta}{\operatorname{argmin}}}\left\{{\frac {1}{N}}\left\|y-X\beta \right\|_{2}^{2}+\lambda \|\beta \|_{1}\right\}
 \]</span></p>
 <ul>
-<li>Why does this work to penalize complexity?</li>
-<li>What does the parameter <span class="math inline">\(\lambda\)</span> do?</li>
+<li>Why does this work to penalize complexity? What does the parameter <span class="math inline">\(\lambda\)</span> do?</li>
+<li>Some known issues with LASSO fixed in extension of the same intuitions: <strong>Elastic Net</strong></li>
+</ul>
+<p><span class="math display">\[
+\beta^*_{EN} = {\underset {\beta }{\operatorname {argmin} }}\left\{ \|y-X\beta \|^{2}_2+\lambda _{2}\|\beta \|^{2}+\lambda _{1}\|\beta \|_{1} \right\}
+\]</span></p>
+<ul>
+<li>(Ensures a unique global minimum! Note that <span class="math inline">\(\lambda_2 = 0, \lambda_1 = 1 \implies \beta^*_{LASSO} = \beta^*_{EN}\)</span>)</li>
 </ul>
 <aside><ol class="aside-footnotes"><li id="fn2"><p><strong>L</strong>east <strong>A</strong>bsolute <strong>S</strong>hrinkage and <strong>S</strong>election <strong>O</strong>perator</p></li></ol></aside></section>
 <section id="training-vs.-test-data" class="slide level2">
@@ -944,61 +973,215 @@ N5
 <li>The key: <strong>Validation Sets</strong></li>
 </ul></li>
 </ul>
-<svg width="960" height="400" viewbox="0.00 0.00 491.00 142.00" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style=" display: block; margin: auto auto auto auto">
+<div class="cell" data-fig-height="3">
+<div class="cell-output-display">
+<div>
+<p>
+<svg width="960" height="288" viewbox="0.00 0.00 553.00 142.00" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style=" display: block; margin: auto auto auto auto">
 <g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 138)">
 <title>
 grid
 </title>
-<polygon fill="white" stroke="transparent" points="-4,4 -4,-138 487,-138 487,4 -4,4"></polygon> <g id="clust1" class="cluster">
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-138 549,-138 549,4 -4,4"></polygon> <g id="clust1" class="cluster">
 <title>
 cluster_01
 </title>
-<polygon fill="none" stroke="black" points="8,-8 8,-126 376,-126 376,-8 8,-8"></polygon> <text text-anchor="middle" x="192" y="-109.4" font-family="Times,serif" font-size="14.00">Training Set (80%)</text> </g> <g id="clust3" class="cluster">
-<title>
-cluster_03
-</title>
-<polygon fill="none" stroke="black" points="226,-16 226,-93 368,-93 368,-16 226,-16"></polygon> <text text-anchor="middle" x="297" y="-76.4" font-family="Times,serif" font-size="14.00">Validation Fold (25%)</text> </g> <g id="clust2" class="cluster">
+<polygon fill="none" stroke="black" points="8,-8 8,-126 438,-126 438,-8 8,-8"></polygon> <text text-anchor="middle" x="223" y="-109.4" font-family="Times,serif" font-size="14.00">Training Set (80%)</text> </g> <g id="clust2" class="cluster">
 <title>
 cluster_02
 </title>
-<polygon fill="none" stroke="black" points="16,-16 16,-93 210,-93 210,-16 16,-16"></polygon> <text text-anchor="middle" x="113" y="-76.4" font-family="Times,serif" font-size="14.00">Training Fold (75%)</text> </g> <g id="clust4" class="cluster">
+<polygon fill="none" stroke="black" points="16,-16 16,-93 272,-93 272,-16 16,-16"></polygon> <text text-anchor="middle" x="144" y="-76.4" font-family="Times,serif" font-size="14.00">Training Fold (80%)</text> </g> <g id="clust3" class="cluster">
+<title>
+cluster_03
+</title>
+<polygon fill="none" stroke="black" points="288,-16 288,-93 430,-93 430,-16 288,-16"></polygon> <text text-anchor="middle" x="359" y="-76.4" font-family="Times,serif" font-size="14.00">Validation Fold (20%)</text> </g> <g id="clust4" class="cluster">
 <title>
 cluster_04
 </title>
-<polygon fill="none" stroke="black" points="384,-16 384,-93 483,-93 483,-16 384,-16"></polygon> <text text-anchor="middle" x="433.5" y="-76.4" font-family="Times,serif" font-size="14.00">Test Set (20%)</text> </g> <!-- A1 --> <g id="node1" class="node">
+<polygon fill="none" stroke="black" points="446,-16 446,-93 545,-93 545,-16 446,-16"></polygon> <text text-anchor="middle" x="495.5" y="-76.4" font-family="Times,serif" font-size="14.00">Test Set (20%)</text> </g> <!-- A1 --> <g id="node1" class="node">
 <title>
 A1
 </title>
-<polygon fill="lightblue" stroke="black" points="78,-60 24,-60 24,-24 78,-24 78,-60"></polygon> <text text-anchor="middle" x="51" y="-37.8" font-family="Times,serif" font-size="14.00">20%</text> </g> <!-- A2 --> <g id="node2" class="node">
+<polygon fill="lightblue" stroke="black" points="78,-60 24,-60 24,-24 78,-24 78,-60"></polygon> <text text-anchor="middle" x="51" y="-37.8" font-family="Times,serif" font-size="14.00">16%</text> </g> <!-- A2 --> <g id="node2" class="node">
 <title>
 A2
 </title>
-<polygon fill="lightblue" stroke="black" points="140,-60 86,-60 86,-24 140,-24 140,-60"></polygon> <text text-anchor="middle" x="113" y="-37.8" font-family="Times,serif" font-size="14.00">20%</text> </g> <!-- A1&#45;&#45;A2 --> <!-- A3 --> <g id="node3" class="node">
+<polygon fill="lightblue" stroke="black" points="140,-60 86,-60 86,-24 140,-24 140,-60"></polygon> <text text-anchor="middle" x="113" y="-37.8" font-family="Times,serif" font-size="14.00">16%</text> </g> <!-- A1&#45;&#45;A2 --> <!-- A3 --> <g id="node3" class="node">
 <title>
 A3
 </title>
-<polygon fill="lightblue" stroke="black" points="202,-60 148,-60 148,-24 202,-24 202,-60"></polygon> <text text-anchor="middle" x="175" y="-37.8" font-family="Times,serif" font-size="14.00">20%</text> </g> <!-- A2&#45;&#45;A3 --> <!-- B1 --> <g id="node4" class="node">
+<polygon fill="lightblue" stroke="black" points="202,-60 148,-60 148,-24 202,-24 202,-60"></polygon> <text text-anchor="middle" x="175" y="-37.8" font-family="Times,serif" font-size="14.00">16%</text> </g> <!-- A2&#45;&#45;A3 --> <!-- A4 --> <g id="node4" class="node">
+<title>
+A4
+</title>
+<polygon fill="lightblue" stroke="black" points="264,-60 210,-60 210,-24 264,-24 264,-60"></polygon> <text text-anchor="middle" x="237" y="-37.8" font-family="Times,serif" font-size="14.00">16%</text> </g> <!-- A3&#45;&#45;A4 --> <!-- B1 --> <g id="node5" class="node">
 <title>
 B1
 </title>
-<polygon fill="lightgreen" stroke="black" points="324,-60 270,-60 270,-24 324,-24 324,-60"></polygon> <text text-anchor="middle" x="297" y="-37.8" font-family="Times,serif" font-size="14.00">20%</text> </g> <!-- A3&#45;&#45;B1 --> <!-- C1 --> <g id="node5" class="node">
+<polygon fill="lightgreen" stroke="black" points="386,-60 332,-60 332,-24 386,-24 386,-60"></polygon> <text text-anchor="middle" x="359" y="-37.8" font-family="Times,serif" font-size="14.00">16%</text> </g> <!-- A4&#45;&#45;B1 --> <!-- C1 --> <g id="node6" class="node">
 <title>
 C1
 </title>
-<polygon fill="orange" stroke="black" points="460,-60 406,-60 406,-24 460,-24 460,-60"></polygon> <text text-anchor="middle" x="433" y="-37.8" font-family="Times,serif" font-size="14.00">20%</text> </g> <!-- B1&#45;&#45;C1 --> </g>
+<polygon fill="orange" stroke="black" points="522,-60 468,-60 468,-24 522,-24 522,-60"></polygon> <text text-anchor="middle" x="495" y="-37.8" font-family="Times,serif" font-size="14.00">20%</text> </g> <!-- B1&#45;&#45;C1 --> </g>
 </svg>
+</p>
+</div>
+</div>
+</div>
 </section>
-<section id="hyperparameter-tuning" class="slide level2">
-<h2>Hyperparameter Tuning</h2>
+<section id="hyperparameters" class="slide level2">
+<h2>Hyperparameters</h2>
+<ul>
+<li>The unspoken (but highly consequential!) “settings” for our learning procedure (that we <em>haven’t</em> optimized via gradient descent)</li>
+<li>There are several we’ve already seen – can you name them?</li>
+</ul>
+<div class="fragment">
+<ul>
+<li>Unsupervised Clustering: The number of clusters we want (<span class="math inline">\(K\)</span>)</li>
+<li>Gradient Descent: The <strong>step size</strong> <span class="math inline">\(\gamma\)</span></li>
+<li>LASSO/Elastic Net: <span class="math inline">\(\lambda\)</span></li>
+<li>The train/validation/test split!</li>
+</ul>
+</div>
 </section>
-<section id="prediction" class="slide level2">
-<h2>Prediction</h2>
+<section id="hyperparameter-selection" class="slide level2">
+<h2>Hyperparameter Selection</h2>
+<ul>
+<li>Every model comes with its own hyperparameters:
+<ul>
+<li>Neural Networks: Number of layers, number of nodes per layer</li>
+<li>Decision Trees: Maximum tree depth, max number of features to include</li>
+<li>Topic Models: Number of topics, document/topic <strong>priors</strong></li>
+</ul></li>
+<li>So, how do we choose?
+<ul>
+<li>Often more art than science</li>
+<li>Principled, universally applicable, but slow: grid search</li>
+<li>Specific methods for specific algorithms: ADAM <span class="citation" data-cites="kingma_adam_2017">(<a href="#/references" role="doc-biblioref" onclick="">Kingma and Ba 2017</a>)</span> for Neural Network learning rates)</li>
+</ul></li>
+</ul>
+</section>
+<section id="now-what" class="slide level2">
+<h2>…Now What?</h2>
+<ul>
+<li>So we’ve got a trained model…
+<ul>
+<li>Data collected ✅</li>
+<li>Loss function chosen ✅</li>
+<li>Gradient descent complete ✅</li>
+<li>Hyperparameters tuned ✅</li>
+<li>Good <span class="math inline">\(F_1\)</span> score on test data ✅</li>
+</ul></li>
+<li>What’s our next step?
+<ul>
+<li>This is where <strong>engineers</strong> and <strong>social scientists</strong> diverge…</li>
+</ul></li>
+</ul>
+</section>
+<section id="prediction-vs.-explanation-prediction" class="slide level2 smaller-lines">
+<h2>Prediction vs.&nbsp;Explanation: Prediction</h2>
+<ul>
+<li>Intro CS courses: Prediction
+<ul>
+<li><a href="https://en.wikipedia.org/wiki/Netflix_Prize">Netflix Prize</a>: Predict a user’s next rating given previous ratings</li>
+<li>Neural networks: They just, like, <strong>work</strong>! (ChatGPT, Google Translate, …)</li>
+</ul></li>
+</ul>
+<center>
+<img data-src="google_translate_crop2.png" id="goog">
+</center>
+
+<aside><div>
+<p>Source: <a href="https://techcrunch.com/2016/11/22/googles-ai-translation-tool-seems-to-have-invented-its-own-secret-internal-language/">TechCrunch, Nov.&nbsp;22, 2016.</a></p>
+</div></aside></section>
+<section id="prediction-vs.-explanation-explanation" class="slide level2">
+<h2>Prediction vs.&nbsp;Explanation: Explanation</h2>
+<ul>
+<li>Intro Social Science courses: Explanation
+<ul>
+<li>Criteria for success: What does this parameter <strong>mean</strong>? Is it <strong>statistically significant</strong>? What is the <strong>mechanism</strong>?</li>
+</ul></li>
+</ul>
+
+<img data-src="index_files/figure-revealjs/unnamed-chunk-25-1.png" width="960" class="r-stretch quarto-figure-center"><div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="fu">cor</span>(ski_df<span class="sc">$</span>value, law_df<span class="sc">$</span>value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.9921178</code></pre>
+</div>
+</div>
+</section>
+<section id="a-symbiotic-relationship" class="slide level2 smaller-lines">
+<h2>A Symbiotic Relationship</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<center>
+<strong>Engineering</strong>
+</center>
+<ul>
+<li>Computer scientists: great strides in <strong>explainable</strong> machine learning
+<ul>
+<li><a href="https://www.fatml.org/">Fairness and Transparency in Machine Learning (FAT-ML)</a> conference</li>
+</ul></li>
+</ul>
+<center>
+<img data-src="math_destruction.jpg" id="math">
+</center>
+</div><div class="column" style="width:50%;">
+<center>
+<strong>Social Science</strong>
+</center>
+<ul>
+<li>Meanwhile, social scientists are increasingly incorporating <em>prediction</em> tasks into their <em>explanatory</em> models
+<ul>
+<li><a href="https://arxiv.org/abs/1608.00060">Double Machine Learning</a> approach to estimating causal effects</li>
+<li>Microsoft’s <a href="https://www.microsoft.com/en-us/research/project/econml/">EconML</a></li>
+</ul></li>
+</ul>
+<center>
+<img data-src="econML.png">
+</center>
+</div>
+</div>
 </section>
 <section id="lab" class="slide level2">
 <h2>Lab</h2>
+<ul>
+<li>Download data:</li>
+<li>Train neural net</li>
+<li>Best predictor wins a prize!</li>
+</ul>
 </section>
 <section id="q-a" class="slide level2">
 <h2>Q &amp; A</h2>
+</section>
+<section id="references" class="slide level2 smaller scrollable">
+<h2>References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent" role="doc-bibliography">
+<div id="ref-chernozhukov_double_2018" class="csl-entry" role="doc-biblioentry">
+Chernozhukov, Victor, Denis Chetverikov, Mert Demirer, Esther Duflo, Christian Hansen, Whitney Newey, and James Robins. 2018. <span>“Double/Debiased Machine Learning for Treatment and Structural Parameters.”</span> <em>The Econometrics Journal</em> 21 (1): C1–68. <a href="https://doi.org/10.1111/ectj.12097">https://doi.org/10.1111/ectj.12097</a>.
+</div>
+<div id="ref-hastie_elements_2013" class="csl-entry" role="doc-biblioentry">
+Hastie, Trevor, Robert Tibshirani, and Jerome Friedman. 2013. <em>The <span>Elements</span> of <span>Statistical Learning</span>: <span>Data Mining</span>, <span>Inference</span>, and <span>Prediction</span></em>. <span>Springer Science &amp; Business Media</span>.
+</div>
+<div id="ref-kingma_adam_2017" class="csl-entry" role="doc-biblioentry">
+Kingma, Diederik P., and Jimmy Ba. 2017. <span>“Adam: <span>A Method</span> for <span>Stochastic Optimization</span>.”</span> <span>arXiv</span>. <a href="https://doi.org/10.48550/arXiv.1412.6980">https://doi.org/10.48550/arXiv.1412.6980</a>.
+</div>
+<div id="ref-mcelreath_statistical_2020" class="csl-entry" role="doc-biblioentry">
+McElreath, Richard. 2020. <em>Statistical <span>Rethinking</span>: <span>A Bayesian Course</span> with <span>Examples</span> in <span>R</span> and <span>STAN</span></em>. <span>CRC Press</span>.
+</div>
+<div id="ref-oneil_weapons_2016" class="csl-entry" role="doc-biblioentry">
+O’Neil, Cathy. 2016. <em>Weapons of <span>Math Destruction</span>: <span>How Big Data Increases Inequality</span> and <span>Threatens Democracy</span></em>. <span>Crown</span>.
+</div>
+<div id="ref-schmidinger_exploring_2019" class="csl-entry" role="doc-biblioentry">
+Schmidinger, Niklas. 2019. <span>“Exploring <span>Neural Turing Machines</span>.”</span> <em>Johannes Kepler University Blog</em>, December.
+</div>
+<div id="ref-tibshirani_regression_1996" class="csl-entry" role="doc-biblioentry">
+Tibshirani, Robert. 1996. <span>“Regression <span>Shrinkage</span> and <span>Selection</span> via the <span>Lasso</span>.”</span> <em>Journal of the Royal Statistical Society. Series B (Methodological)</em> 58 (1): 267–88. <a href="https://www.jstor.org/stable/2346178">https://www.jstor.org/stable/2346178</a>.
+</div>
+<div id="ref-tukey_exploratory_1977" class="csl-entry" role="doc-biblioentry">
+Tukey, John W. 1977. <em>Exploratory <span>Data Analysis</span></em>. <span>New York</span>: <span>Addison-Wesley Publishing Company</span>.
+</div>
+</div>
 <div class="footer footer-default">
 <p>Supervised Learning with Parametric Models</p>
 </div>
