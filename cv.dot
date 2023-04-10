@@ -1,0 +1,39 @@
+
+```{dot,fig.height=2,height=2,show=FALSE}
+graph grid
+{
+    graph [
+        overlap=true
+    ]
+    nodesep=0.0
+    ranksep=0.0
+    rankdir="LR"
+    ratio="compress"
+    node [
+        style="filled",
+        color=black,
+        fillcolor=lightblue,
+        shape=box
+    ]
+
+	// uncomment to hide the grid
+	edge [style=invis]
+	
+	subgraph cluster_01 {
+	    label="Training Set (80%)"
+	    subgraph cluster_02 {
+	        label="Training Fold (75%)"
+	        A1[label="20%"] A2[label="20%"] A3[label="20%"]
+	    }
+	    subgraph cluster_03 {
+	        label="Validation Fold (25%)"
+	        B1[label="20%",fillcolor=lightgreen]
+	    }
+	}
+	subgraph cluster_04 {
+	    label="Test Set (20%)"
+	C1[label="20%",fillcolor=orange]
+	}
+	A1 -- A2 -- A3 -- B1 -- C1;
+}
+```

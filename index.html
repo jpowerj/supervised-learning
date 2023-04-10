@@ -28,6 +28,70 @@
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
     }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      { color: #003b4f; background-color: #f1f3f5; }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #003b4f; } /* Normal */
+    code span.al { color: #ad0000; } /* Alert */
+    code span.an { color: #5e5e5e; } /* Annotation */
+    code span.at { color: #657422; } /* Attribute */
+    code span.bn { color: #ad0000; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #003b4f; } /* ControlFlow */
+    code span.ch { color: #20794d; } /* Char */
+    code span.cn { color: #8f5902; } /* Constant */
+    code span.co { color: #5e5e5e; } /* Comment */
+    code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+    code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+    code span.dt { color: #ad0000; } /* DataType */
+    code span.dv { color: #ad0000; } /* DecVal */
+    code span.er { color: #ad0000; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #ad0000; } /* Float */
+    code span.fu { color: #4758ab; } /* Function */
+    code span.im { color: #00769e; } /* Import */
+    code span.in { color: #5e5e5e; } /* Information */
+    code span.kw { color: #003b4f; } /* Keyword */
+    code span.op { color: #5e5e5e; } /* Operator */
+    code span.ot { color: #003b4f; } /* Other */
+    code span.pp { color: #ad0000; } /* Preprocessor */
+    code span.sc { color: #5e5e5e; } /* SpecialChar */
+    code span.ss { color: #20794d; } /* SpecialString */
+    code span.st { color: #20794d; } /* String */
+    code span.va { color: #111111; } /* Variable */
+    code span.vs { color: #20794d; } /* VerbatimString */
+    code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   </style>
   <link rel="stylesheet" href="index_files/libs/revealjs/dist/theme/quarto.css" id="theme">
   <link rel="stylesheet" href="gtown.css">
@@ -364,8 +428,10 @@ Jeff Jacobs
 <aside><ol class="aside-footnotes"><li id="fn1"><p><em>Whether standard <strong>classification</strong> (sorting each observation into a bin) or <strong>regression</strong> (assigning a real number to each observation)</em></p></li></ol></aside></section>
 <section id="dataset-structures" class="slide level2">
 <h2>Dataset Structures</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
 <ul>
-<li><strong>Supervised</strong> Learning: Dataset has both <em>explanatory</em> variables <span class="colA">(“features”)</span> and <em>response</em> variables <span class="colB">(“labels”)</span></li>
+<li><strong>Supervised</strong> Learning: Dataset has both <span class="colA"><em>explanatory</em> variables (“features”)</span> and <span class="colB"><em>response</em> variables (“labels”)</span></li>
 </ul>
 <div class="cell" data-layout-align="center">
 
@@ -420,8 +486,9 @@ Jeff Jacobs
 </div>
 </div>
 </div>
+</div><div class="column" style="width:50%;">
 <ul>
-<li><strong>Unsupervised</strong> Learning: Dataset has only <em>explanatory</em> variables</li>
+<li><strong>Unsupervised</strong> Learning: Dataset has only <span class="colA"><em>explanatory</em> variables</span></li>
 </ul>
 <div class="cell" data-layout-align="center">
 
@@ -466,6 +533,8 @@ Jeff Jacobs
 </tr>
 </tbody>
 </table>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -612,52 +681,312 @@ F_1 &amp;= 2\frac{\mathsf{Precision} \cdot \mathsf{Recall}}{\mathsf{Precision} +
 </ul>
 
 <img data-src="index_files/figure-revealjs/unnamed-chunk-13-1.png" width="960" class="r-stretch quarto-figure-center"></section>
+<section id="loss-function-implies-ready-to-learn" class="slide level2">
+<h2>Loss Function <span class="math inline">\(\implies\)</span> Ready to Learn!</h2>
+<ul>
+<li><p>Once we’ve chosen a loss function, the learning algorithm has what it needs to proceed with the actual <em>learning</em></p></li>
+<li><p>Notation: Bundle all the model’s parameters together into <span class="math inline">\(\theta\)</span></p></li>
+<li><p>The goal: <span class="math display">\[
+\min_{\theta} \mathcal{L}(y_{obs}, y_{pred}(\theta))
+\]</span></p></li>
+<li><p>How do we solve this?</p></li>
+</ul>
+</section>
+<section id="calculus-strikes-again" class="slide level2">
+<h2>Calculus Strikes Again</h2>
+<ul>
+<li>tldr: The <strong>slope</strong> of a function tells us how to get to a minimum (why <em>a</em> minimum rather than <em>the</em> minimum?)</li>
+<li>Derivative (gradient) = “direction of sharpest decrease”</li>
+<li>Think of <strong>hill climbing</strong>! Let <span class="math inline">\(\ell_t \in L\)</span> be your location at time <span class="math inline">\(t\)</span>, and <span class="math inline">\(Alt(\ell)\)</span> be the altitude at a location <span class="math inline">\(\ell\)</span></li>
+<li>Gradient descent for <span class="math inline">\(\ell^* = \max_{\ell \in L} Alt(\ell)\)</span>: <span class="math display">\[
+\ell_{t+1} = \ell_t + \gamma\nabla Alt(\ell_t),\ t\geq 0.
+\]</span></li>
+<li>While top of mountain = good, <strong>Loss</strong> is bad: we want to find the <strong>bottom</strong> of the “loss crater”
+<ul>
+<li><span class="math inline">\(\implies\)</span> we do the opposite: subtract <span class="math inline">\(\gamma\nabla Alt(\ell_t)\)</span></li>
+</ul></li>
+</ul>
+</section>
 <section id="good-and-bad-news" class="slide level2">
 <h2>Good and Bad News</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
 <ul>
-<li>Universal Approximation Theorem
-<ul>
+<li>Universal Approximation Theorem</li>
 <li>Neural networks can represent any function mapping one Euclidean space to another</li>
-<li>Neural Turing Machines:</li>
-</ul></li>
+<li>(Neural Turing Machines:)</li>
 </ul>
 <center>
 <img data-src="NTM_Schematic.png" style="width:50.0%">
 </center>
 </div><div class="column" style="width:&quot;50%;">
-<div class="smallmath">
 <ul>
-<li>Weierstrass Approximation Theorem
-<ul>
-<li>Polynomials already could represent any function <span class="math display">\[
+<li>Weierstrass Approximation Theorem</li>
+<li>(Polynomials could already represent any function)</li>
+</ul>
+<p><span class="math display">\[
 f \in C([a,b],[a,b])
 \]</span> <span class="math display">\[
 \implies \forall \epsilon &gt; 0, \exists p \in \mathbb{R}[x] :
 \]</span> <span class="math display">\[
 \forall x \in [a, b] \; \left|f(x) − p(x)\right| &lt; \epsilon
-\]</span></li>
-</ul></li>
+\]</span></p>
+<ul>
+<li>Implications for machine learning?</li>
 </ul>
-</div>
-<center>
-<img data-src="Overfitting.svg" style="width:50.0%">
-</center>
 </div>
 </div>
 </section>
-<section id="regularization" class="slide level2">
-<h2>Regularization</h2>
+<section id="so-whats-the-issue" class="slide level2">
+<h2>So What’s the Issue?</h2>
+<div class="columns">
+<div class="column" style="width:&quot;50%;">
+<div class="cell" data-layout-align="center">
+
+</div>
+<div class="cell" data-layout-align="left">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-left">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-15-1.png" width="351"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-16-1.png" width="480"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<ul>
+<li>Higher <span class="math inline">\(R^2\)</span> = Better Model? Lower <span class="math inline">\(RSS\)</span>?</li>
+<li>Linear Model:</li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">summary</span>(lin_model)<span class="sc">$</span>r.squared</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.5278586</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="fu">get_rss</span>(lin_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.5538001</code></pre>
+</div>
+</div>
+<ul>
+<li>Polynomial Model:</li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="fu">summary</span>(poly_model)<span class="sc">$</span>r.squared</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a><span class="fu">get_rss</span>(poly_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="generalization" class="slide level2">
+<h2>Generalization</h2>
+<ul>
+<li>Training Accuracy: How well does it fit the data we can see?</li>
+<li>Test Accuracy: How well does it <strong>generalize</strong> to future data?</li>
+</ul>
+<div class="columns">
+<div class="column" style="width:&quot;50%;">
+<div class="cell" data-layout-align="center">
+
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="index_files/figure-revealjs/unnamed-chunk-20-1.png" width="528"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:50%;">
+<ul>
+<li>Linear Model:</li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>lin_r2_test</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.8850235</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a>lin_rss_test</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.1405576</code></pre>
+</div>
+</div>
+<ul>
+<li>Polynomial Model:</li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>poly_r2_test</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.4825181</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>poly_rss_test</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.6326165</code></pre>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="how-to-avoid-overfitting" class="slide level2">
+<h2>How to Avoid Overfitting?</h2>
+<ul>
+<li>The gist: penalize model <strong>complexity</strong></li>
+</ul>
+<p>Original optimization: <span class="math display">\[
+\min_{params} \mathcal{L}(y_{obs}, y_{pred}(params))
+\]</span></p>
+<p>New optimization: <span class="math display">\[
+\min_{\theta} \left[ \mathcal{L}(y_{obs}, y_{pred}(\theta)) + \mathsf{Complexity}(\theta) \right]
+\]</span></p>
+<ul>
+<li>So how do we measure, and penalize, “complexity”?</li>
+</ul>
+</section>
+<section id="regularization-measuring-and-penalizing-complexity" class="slide level2">
+<h2>Regularization: Measuring and Penalizing Complexity</h2>
+<ul>
+<li>In the case of polynomials, fairly simple complexity measure: <em>degree</em> of polynomial</li>
+</ul>
+<p><span class="math display">\[
+\mathsf{Complexity}(y_{pred} = \beta_0 + \beta_1 x + \beta_2 x^2 + \beta_3 x^3) &gt; \mathsf{Complexity}(y_{pred} = \beta_0 + \beta_1 x)
+\]</span></p>
+<ul>
+<li>In general machine learning, however, we might not be working with polynomials</li>
+<li>In neural networks, for example, we sometimes toss in millions of features and ask the algorithm to “just figure it out”</li>
+<li>The gist, in the general case, is thus: try to “amplify” the most important features and shrink the rest, so that</li>
+</ul>
+<p><span class="math display">\[
+\mathsf{Complexity} \propto \frac{|\text{AmplifiedFeatures}|}{|\text{ShrunkFeatures}|}
+\]</span></p>
+</section>
+<section id="lasso-regression" class="slide level2">
+<h2>LASSO Regression</h2>
+<ul>
+<li>Many ways to translate this intuition into math!</li>
+<li>In several fields, however (econ, biostatistics), LASSO<sup>1</sup> is most popular:</li>
+</ul>
+<p><span class="math display">\[
+\beta^* = \min _{\beta \in \mathbb {R} ^{p}}\left\{{\frac {1}{N}}\left\|y-X\beta \right\|_{2}^{2}+\lambda \|\beta \|_{1}\right\}
+\]</span></p>
+<ul>
+<li>Why does this work to penalize complexity?</li>
+<li>What does the parameter <span class="math inline">\(\lambda\)</span> do?</li>
+</ul>
+<aside><ol class="aside-footnotes"><li id="fn2"><p><strong>L</strong>east <strong>A</strong>bsolute <strong>S</strong>hrinkage and <strong>S</strong>election <strong>O</strong>perator</p></li></ol></aside></section>
+<section id="training-vs.-test-data" class="slide level2">
+<h2>Training vs.&nbsp;Test Data</h2>
+<div class="cell" data-fig-size="3">
+<div class="cell-output-display">
+<div>
+<p>
+<svg width="960" height="480" viewbox="0.00 0.00 366.00 100.80" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style=" display: block; margin: auto auto auto auto">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 96.8)">
+<title>
+grid
+</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-96.8 362,-96.8 362,4 -4,4"></polygon> <g id="clust1" class="cluster">
+<title>
+cluster_01
+</title>
+<polygon fill="none" stroke="black" points="8,-8 8,-84.8 243,-84.8 243,-8 8,-8"></polygon> <text text-anchor="middle" x="125.5" y="-68.2" font-family="Times,serif" font-size="14.00">Training Set (80%)</text> </g> <g id="clust2" class="cluster">
+<title>
+cluster_02
+</title>
+<polygon fill="none" stroke="black" points="251,-8 251,-84.8 350,-84.8 350,-8 251,-8"></polygon> <text text-anchor="middle" x="300.5" y="-68.2" font-family="Times,serif" font-size="14.00">Test Set (20%)</text> </g> <!-- N1 --> <g id="node1" class="node">
+<title>
+N1
+</title>
+<polygon fill="lightblue" stroke="black" points="235,-52 181,-52 181,-16 235,-16 235,-52"></polygon> <text text-anchor="middle" x="208" y="-29.8" font-family="Times,serif" font-size="14.00">20%</text> </g> <!-- N2 --> <g id="node2" class="node">
+<title>
+N2
+</title>
+<polygon fill="lightblue" stroke="black" points="180,-52 126,-52 126,-16 180,-16 180,-52"></polygon> <text text-anchor="middle" x="153" y="-29.8" font-family="Times,serif" font-size="14.00">20%</text> </g> <!-- N3 --> <g id="node3" class="node">
+<title>
+N3
+</title>
+<polygon fill="lightblue" stroke="black" points="125,-52 71,-52 71,-16 125,-16 125,-52"></polygon> <text text-anchor="middle" x="98" y="-29.8" font-family="Times,serif" font-size="14.00">20%</text> </g> <!-- N4 --> <g id="node4" class="node">
+<title>
+N4
+</title>
+<polygon fill="lightblue" stroke="black" points="70,-52 16,-52 16,-16 70,-16 70,-52"></polygon> <text text-anchor="middle" x="43" y="-29.8" font-family="Times,serif" font-size="14.00">20%</text> </g> <!-- N5 --> <g id="node5" class="node">
+<title>
+N5
+</title>
+<polygon fill="orange" stroke="black" points="327,-52 273,-52 273,-16 327,-16 327,-52"></polygon> <text text-anchor="middle" x="300" y="-29.8" font-family="Times,serif" font-size="14.00">20%</text> </g> </g>
+</svg>
+</p>
+</div>
+</div>
+</div>
 </section>
 <section id="cross-validation" class="slide level2">
 <h2>Cross-Validation</h2>
-</section>
-<section id="model" class="slide level2">
-<h2>Model</h2>
-</section>
-<section id="numerical-optimization" class="slide level2">
-<h2>Numerical Optimization</h2>
+<ul>
+<li>The idea that <strong>good models generalize well</strong> is crucial!
+<ul>
+<li>What if we could leverage this insight to optimize <strong>over our training data</strong>?</li>
+<li>The key: <strong>Validation Sets</strong></li>
+</ul></li>
+</ul>
+<svg width="960" height="400" viewbox="0.00 0.00 491.00 142.00" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style=" display: block; margin: auto auto auto auto">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 138)">
+<title>
+grid
+</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-138 487,-138 487,4 -4,4"></polygon> <g id="clust1" class="cluster">
+<title>
+cluster_01
+</title>
+<polygon fill="none" stroke="black" points="8,-8 8,-126 376,-126 376,-8 8,-8"></polygon> <text text-anchor="middle" x="192" y="-109.4" font-family="Times,serif" font-size="14.00">Training Set (80%)</text> </g> <g id="clust3" class="cluster">
+<title>
+cluster_03
+</title>
+<polygon fill="none" stroke="black" points="226,-16 226,-93 368,-93 368,-16 226,-16"></polygon> <text text-anchor="middle" x="297" y="-76.4" font-family="Times,serif" font-size="14.00">Validation Fold (25%)</text> </g> <g id="clust2" class="cluster">
+<title>
+cluster_02
+</title>
+<polygon fill="none" stroke="black" points="16,-16 16,-93 210,-93 210,-16 16,-16"></polygon> <text text-anchor="middle" x="113" y="-76.4" font-family="Times,serif" font-size="14.00">Training Fold (75%)</text> </g> <g id="clust4" class="cluster">
+<title>
+cluster_04
+</title>
+<polygon fill="none" stroke="black" points="384,-16 384,-93 483,-93 483,-16 384,-16"></polygon> <text text-anchor="middle" x="433.5" y="-76.4" font-family="Times,serif" font-size="14.00">Test Set (20%)</text> </g> <!-- A1 --> <g id="node1" class="node">
+<title>
+A1
+</title>
+<polygon fill="lightblue" stroke="black" points="78,-60 24,-60 24,-24 78,-24 78,-60"></polygon> <text text-anchor="middle" x="51" y="-37.8" font-family="Times,serif" font-size="14.00">20%</text> </g> <!-- A2 --> <g id="node2" class="node">
+<title>
+A2
+</title>
+<polygon fill="lightblue" stroke="black" points="140,-60 86,-60 86,-24 140,-24 140,-60"></polygon> <text text-anchor="middle" x="113" y="-37.8" font-family="Times,serif" font-size="14.00">20%</text> </g> <!-- A1&#45;&#45;A2 --> <!-- A3 --> <g id="node3" class="node">
+<title>
+A3
+</title>
+<polygon fill="lightblue" stroke="black" points="202,-60 148,-60 148,-24 202,-24 202,-60"></polygon> <text text-anchor="middle" x="175" y="-37.8" font-family="Times,serif" font-size="14.00">20%</text> </g> <!-- A2&#45;&#45;A3 --> <!-- B1 --> <g id="node4" class="node">
+<title>
+B1
+</title>
+<polygon fill="lightgreen" stroke="black" points="324,-60 270,-60 270,-24 324,-24 324,-60"></polygon> <text text-anchor="middle" x="297" y="-37.8" font-family="Times,serif" font-size="14.00">20%</text> </g> <!-- A3&#45;&#45;B1 --> <!-- C1 --> <g id="node5" class="node">
+<title>
+C1
+</title>
+<polygon fill="orange" stroke="black" points="460,-60 406,-60 406,-24 460,-24 460,-60"></polygon> <text text-anchor="middle" x="433" y="-37.8" font-family="Times,serif" font-size="14.00">20%</text> </g> <!-- B1&#45;&#45;C1 --> </g>
+</svg>
 </section>
 <section id="hyperparameter-tuning" class="slide level2">
 <h2>Hyperparameter Tuning</h2>

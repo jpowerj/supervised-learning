@@ -21,6 +21,8 @@ library(ggplot2)
 library(dplyr)
 library(ggforce)
 library(patchwork)
+cbPalette <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+options(ggplot2.discrete.colour= cbPalette)
 global_theme <- ggplot2::theme_classic() + ggplot2::theme(
   plot.title = element_text(hjust = 0.5, size = 18),
   axis.title = element_text(size = 14),
@@ -31,14 +33,15 @@ global_theme <- ggplot2::theme_classic() + ggplot2::theme(
 )
 knitr::opts_chunk$set(fig.align="center")
 g_pointsize <- 6
-cbPalette <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+# Global functions
+get_rss <- function(model) { return(sum(summary(model)$residuals^2)) }
 ```
 
 ## Supervised vs. Unsupervised Learning
 
 ::: columns
 ::: {.column width="50%"}
--   **Supervised** Learning: You want the computer to learn the pattern of how *you* are classifying[^1] observations in a dataset
+-   **Supervised** Learning: You want the computer to learn the pattern of how *you* are classifying^[*Whether standard **classification** (sorting each observation into a bin) or **regression** (assigning a real number to each observation)*] observations in a dataset
     -   Discovering the relationship between *properties* of data and *outcomes*
     -   Example (*Binary Classification*): I look at homes on Zillow, saving those I like to folder A and don't like to folder B
     -   Example (*Regression*): I assign a rating of 0-100 to each home
@@ -53,11 +56,12 @@ cbPalette <- c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00",
 :::
 :::
 
-[^1]: *Whether standard **classification** (sorting each observation into a bin) or **regression** (assigning a real number to each observation)*
-
 ## Dataset Structures
 
--   **Supervised** Learning: Dataset has both *explanatory* variables [("features")]{.colA} and *response* variables [("labels")]{.colB}
+::: columns
+::: {.column width="50%"}
+
+-   **Supervised** Learning: Dataset has both [*explanatory* variables ("features")]{.colA} and [*response* variables ("labels")]{.colB}
 
 ```{r}
 sup_data <- tibble::tribble(
@@ -75,8 +79,11 @@ sup_data <- tibble::tribble(
 sup_data
 ```
 :::
+:::
 
--   **Unsupervised** Learning: Dataset has only *explanatory* variables
+::: {.column width="50%"}
+
+-   **Unsupervised** Learning: Dataset has only [*explanatory* variables]{.colA}
 
 ```{r}
 unsup_data <- tibble::tribble(
@@ -94,6 +101,9 @@ unsup_data <- tibble::tribble(
 unsup_data
 ```
 :::
+:::
+:::
+
 
 ## Dataset Structures: Visualized
 
@@ -154,8 +164,8 @@ ggplot(sup_data, aes(x=sqft, y=bedrooms, color=rating)) +
   global_theme +
   expand_limits(x=c(800,2700), y=c(0.8,2.2)) +
   geom_vline(xintercept = 1750, linetype="dashed", color = "black", size=1) +
-  annotate('rect', xmin=-Inf, xmax=1750, ymin=-Inf, ymax=Inf, alpha=.2, fill='red') +
-  annotate('rect', xmin=1750, xmax=Inf, ymin=-Inf, ymax=Inf, alpha=.2, fill='blue')
+  annotate('rect', xmin=-Inf, xmax=1750, ymin=-Inf, ymax=Inf, alpha=.2, fill=cbPalette[1]) +
+  annotate('rect', xmin=1750, xmax=Inf, ymin=-Inf, ymax=Inf, alpha=.2, fill=cbPalette[2])
   #geom_rect(aes(xmin=-Inf, xmax=Inf, ymin=0, ymax=Inf, alpha=.2, fill='red'))
 ```
 :::
@@ -163,7 +173,7 @@ ggplot(sup_data, aes(x=sqft, y=bedrooms, color=rating)) +
 ::: {.column width="50%"}
 ```{r, fig.width=5, fig.height=5.5}
 ggplot(unsup_grouped, aes(x=sqft, y=bedrooms)) +
-  scale_color_brewer(palette = "PuOr") +
+  #scale_color_brewer(palette = "PuOr") +
   geom_mark_ellipse(expand=0.1, aes(fill=big), size = 1) +
   geom_point(size=g_pointsize) +
   labs(
@@ -176,7 +186,7 @@ ggplot(unsup_grouped, aes(x=sqft, y=bedrooms)) +
   #theme(legend.position = "none") +
   #theme(legend.title = text_element("?"))
   expand_limits(x=c(800,2700), y=c(0.8,2.2)) +
-  scale_fill_manual(values=c(cbPalette[3],cbPalette), labels=c("?","?"))
+  scale_fill_manual(values=c(cbPalette[3],cbPalette[4]), labels=c("?","?"))
   #scale_fill_manual(labels=c("?","?"))
 ```
 :::
@@ -244,7 +254,7 @@ line_data <- tibble::tribble(
 data_range <- 800:2700
 ribbon_range <- c(-Inf,data_range,Inf)
 f1 <- function(x) { return(0*x + 0.75) }
-f1_data <- tibble::tibble(line_x=ribbon_range,line_y=c(Inf,f1(data_range),-Inf))
+f1_data <- tibble::tibble(line_x=ribbon_range,line_y=c(f1(700),f1(data_range),f1(3100)))
 g1_plot <- ggplot(data=(line_data %>% filter(id==0))) +
   geom_abline(aes(slope=slope, intercept=intercept), linetype="dashed", size=1) +
   ggtitle("Guess 1: 60% Accuracy") +
@@ -258,7 +268,7 @@ g1_plot <- ggplot(data=(line_data %>% filter(id==0))) +
   ) +
   global_theme +
   expand_limits(x=data_range, y=c(0.8,2.2)) +
-  scale_fill_manual(values=c("Liked"="blue","Disliked"="red"), name="Guess")
+  scale_fill_manual(values=c("Liked"=cbPalette[2],"Disliked"=cbPalette[1]), name="Guess")
 
 f2 <- function(x) { return(0.00065*x + 0.5) }
 f2_data <- tibble::tibble(line_x=ribbon_range,line_y=c(f2(710),f2(data_range),f2(Inf)))
@@ -275,7 +285,7 @@ g2_plot <- ggplot(data=(line_data %>% filter(id==1))) +
   geom_ribbon(data=f2_data, aes(x=line_x, ymin=line_y, ymax=Inf, fill="Disliked"), alpha=0.2) +
   global_theme +
   expand_limits(x=data_range, y=c(0.8,2.2)) +
-  scale_fill_manual(values=c("Liked"="blue","Disliked"="red"), name="Guess")
+  scale_fill_manual(values=c("Liked"=cbPalette[2],"Disliked"=cbPalette[1]), name="Guess")
 
 g1_plot + g2_plot
 ```
@@ -334,7 +344,7 @@ g1_plot <- ggplot(data=(line_data %>% filter(id==0))) +
   ) +
   global_theme +
   expand_limits(x=data_range, y=c(0.8,2.2)) +
-  scale_fill_manual(values=c("Liked"="blue","Disliked"="red"), name="Guess")
+  scale_fill_manual(values=c("Liked"=cbPalette[2],"Disliked"=cbPalette[1]), name="Guess")
 
 
 f2_data <- tibble::tibble(line_x=ribbon_range,line_y=c(f2(700),f2(data_range),f2(3100)))
@@ -353,7 +363,7 @@ g2_plot <- ggplot(data=(line_data %>% filter(id==1))) +
   geom_ribbon(data=f2_data, aes(x=line_x, ymin=line_y, ymax=Inf, fill="Disliked"), alpha=0.2) +
   global_theme +
   expand_limits(x=data_range, y=c(0.8,2.2)) +
-  scale_fill_manual(values=c("Liked"="blue","Disliked"="red"), name="Guess")
+  scale_fill_manual(values=c("Liked"=cbPalette[2],"Disliked"=cbPalette[1]), name="Guess")
 
 g1_plot + g2_plot
 ```
@@ -423,14 +433,37 @@ ggplot(ce_data, aes(x=y_pred, y=ce, color=factor(y_obs))) +
   ylim(0,6)
 ```
 
+## Loss Function $\implies$ Ready to Learn!
+
+- Once we've chosen a loss function, the learning algorithm has what it needs to proceed with the actual *learning*
+- Notation: Bundle all the model's parameters together into $\theta$
+- The goal:
+$$
+\min_{\theta} \mathcal{L}(y_{obs}, y_{pred}(\theta))
+$$
+
+- How do we solve this?
+
+## Calculus Strikes Again
+
+- tldr: The **slope** of a function tells us how to get to a minimum (why *a* minimum rather than *the* minimum?)
+- Derivative (gradient) = "direction of sharpest decrease"
+- Think of **hill climbing**! Let $\ell_t \in L$ be your location at time $t$, and $Alt(\ell)$ be the altitude at a location $\ell$
+- Gradient descent for $\ell^* = \max_{\ell \in L} Alt(\ell)$:
+$$
+\ell_{t+1} = \ell_t + \gamma\nabla Alt(\ell_t),\ t\geq 0.
+$$
+- While top of mountain = good, **Loss** is bad: we want to find the **bottom** of the "loss crater"
+    - $\implies$ we do the opposite: subtract $\gamma\nabla Alt(\ell_t)$
+
 ## Good and Bad News
 
 ::: columns
 ::: {.column width="50%"}
 
 * Universal Approximation Theorem
-    - Neural networks can represent any function mapping one Euclidean space to another
-    - Neural Turing Machines:
+* Neural networks can represent any function mapping one Euclidean space to another
+* (Neural Turing Machines:)
 
 <center>
 ![](NTM_Schematic.png){width="50%"}
@@ -440,9 +473,9 @@ ggplot(ce_data, aes(x=y_pred, y=ce, color=factor(y_obs))) +
 
 ::: {.column width="50%}
 
-::: {.smallmath}
 * Weierstrass Approximation Theorem
-    - Polynomials already could represent any function
+* (Polynomials could already represent any function)
+
 $$
 f \in C([a,b],[a,b])
 $$
@@ -452,24 +485,270 @@ $$
 $$
 \forall x \in [a, b] \; \left|f(x) − p(x)\right| < \epsilon
 $$
-:::
 
-<center>
-![](Overfitting.svg){width="50%"}
-</center>
+* Implications for machine learning?
 
 :::
+
 :::
 
-## Regularization
+## So What's the Issue?
+
+::: columns
+::: {.column width="50%}
+
+```{r}
+x <- seq(from = 0, to = 1, by = 0.1)
+n <- length(x)
+eps <- rnorm(n, 0, 0.04)
+y <- x + eps
+# But make one big outlier
+midpoint <- ceiling((3/4)*n)
+y[midpoint] <- 0
+of_data <- tibble::tibble(x=x, y=y)
+# Linear model
+lin_model <- lm(y ~ x)
+# But now polynomial regression
+poly_model <- lm(y ~ poly(x, degree = 10, raw=TRUE))
+#summary(model)
+```
+
+```{r,fig.width=3.666,fig.height=2.5,fig.align="left"}
+ggplot(of_data, aes(x=x, y=y)) +
+  geom_point(size=g_pointsize/2) +
+  labs(
+    title = "Training Data",
+    color = "Model"
+  ) +
+  global_theme
+#  scale_color_manual(name="color", values=c("a","b","c"))
+```
+
+```{r,fig.width=5,fig.height=2.5}
+ggplot(of_data, aes(x=x, y=y)) +
+  geom_point(size=g_pointsize/2) +
+  geom_abline(aes(intercept=0, slope=1, color="Linear"), linewidth=1, show.legend = FALSE) +
+  stat_smooth(method = "lm",
+              formula = y ~ poly(x, 10, raw=TRUE),
+              se = FALSE, aes(color="Polynomial")) +
+  labs(
+    title = "A Perfect Model?",
+    color = "Model"
+  ) +
+  global_theme
+#  scale_color_manual(name="color", values=c("a","b","c"))
+```
+:::
+::: {.column width="50%"}
+
+- Higher $R^2$ = Better Model? Lower $RSS$?
+- Linear Model:
+
+```{r,echo=TRUE}
+summary(lin_model)$r.squared
+get_rss(lin_model)
+```
+- Polynomial Model:
+
+```{r,echo=TRUE}
+summary(poly_model)$r.squared
+get_rss(poly_model)
+```
+
+:::
+:::
+
+## Generalization
+
+- Training Accuracy: How well does it fit the data we can see?
+- Test Accuracy: How well does it **generalize** to future data?
+
+::: columns
+::: {.column width="50%}
+```{r}
+# Data setup
+x_test <- seq(from = 0, to = 1, by = 0.1)
+n_test <- length(x_test)
+eps_test <- rnorm(n_test, 0, 0.04)
+y_test <- x_test + eps_test
+of_data_test <- tibble::tibble(x=x_test, y=y_test)
+lin_y_pred_test <- predict(lin_model, as.data.frame(x_test))
+#lin_y_pred_test
+lin_resids_test <- y_test - lin_y_pred_test
+#lin_resids_test
+lin_rss_test <- sum(lin_resids_test^2)
+#lin_rss_test
+# Lin R2 = 1 - RSS/TSS
+tss_test <- sum((y_test - mean(y_test))^2)
+lin_r2_test <- 1 - (lin_rss_test / tss_test)
+#lin_r2_test
+# Now the poly model
+poly_y_pred_test <- predict(poly_model, as.data.frame(x_test))
+poly_resids_test <- y_test - poly_y_pred_test
+poly_rss_test <- sum(poly_resids_test^2)
+#poly_rss_test
+# RSS
+poly_r2_test <- 1 - (poly_rss_test / tss_test)
+#poly_r2_test
+```
+
+```{r,fig.width=5.5,fig.height=4}
+ggplot(of_data, aes(x=x, y=y)) +
+  stat_smooth(method = "lm",
+              formula = y ~ poly(x, 10, raw = TRUE),
+              se = FALSE, aes(color="Polynomial")) +
+  global_theme +
+  geom_point(data=of_data_test, aes(x=x_test, y=y_test), size=g_pointsize/2) +
+  geom_abline(aes(intercept=0, slope=1, color="Linear"), linewidth=1, show.legend = FALSE) +
+  labs(
+    title = "Getting a Perfect Fit: Unseen Test Data",
+    color = "Model"
+  ) +
+  global_theme
+```
+:::
+::: {.column width="50%"}
+- Linear Model:
+
+```{r,echo=TRUE}
+lin_r2_test
+lin_rss_test
+```
+
+- Polynomial Model:
+```{r,echo=TRUE}
+poly_r2_test
+poly_rss_test
+```
+:::
+:::
+
+## How to Avoid Overfitting?
+
+- The gist: penalize model **complexity**
+
+Original optimization:
+$$
+\min_{params} \mathcal{L}(y_{obs}, y_{pred}(params))
+$$
+
+New optimization:
+$$
+\min_{\theta} \left[ \mathcal{L}(y_{obs}, y_{pred}(\theta)) + \mathsf{Complexity}(\theta) \right]
+$$
+
+- So how do we measure, and penalize, "complexity"?
+
+## Regularization: Measuring and Penalizing Complexity
+
+- In the case of polynomials, fairly simple complexity measure: *degree* of polynomial
+
+$$
+\mathsf{Complexity}(y_{pred} = \beta_0 + \beta_1 x + \beta_2 x^2 + \beta_3 x^3) > \mathsf{Complexity}(y_{pred} = \beta_0 + \beta_1 x)
+$$
+
+- In general machine learning, however, we might not be working with polynomials
+- In neural networks, for example, we sometimes toss in millions of features and ask the algorithm to "just figure it out"
+- The gist, in the general case, is thus: try to "amplify" the most important features and shrink the rest, so that
+
+$$
+\mathsf{Complexity} \propto \frac{|\text{AmplifiedFeatures}|}{|\text{ShrunkFeatures}|}
+$$
+
+## LASSO Regression
+
+- Many ways to translate this intuition into math!
+- In several fields, however (econ, biostatistics), LASSO^[**L**east **A**bsolute **S**hrinkage and **S**election **O**perator] is most popular:
+
+$$
+\beta^* = \min _{\beta \in \mathbb {R} ^{p}}\left\{{\frac {1}{N}}\left\|y-X\beta \right\|_{2}^{2}+\lambda \|\beta \|_{1}\right\}
+$$
+
+- Why does this work to penalize complexity?
+- What does the parameter $\lambda$ do?
+
+## Training vs. Test Data
+
+```{dot}
+//| fig-size: 3
+graph grid
+{
+    graph [
+        overlap=true
+    ]
+    nodesep=0.0
+    ranksep=0.0
+    rankdir="TB"
+    node [
+        style="filled",
+        color=black,
+        fillcolor=lightblue,
+        shape=box
+    ]
+
+	// uncomment to hide the grid
+	edge [style=invis]
+	
+	subgraph cluster_01 {
+	    label="Training Set (80%)"
+	N1[label="20%"] N2[label="20%"] N3[label="20%"] N4[label="20%"]
+	}
+	subgraph cluster_02 {
+	    label="Test Set (20%)"
+	N5[label="20%",fillcolor=orange]
+	}
+}
+```
 
 ## Cross-Validation
 
-## Model
-
-
-
-## Numerical Optimization
+- The idea that **good models generalize well** is crucial!
+  - What if we could leverage this insight to optimize **over our training data**?
+  - The key: **Validation Sets**
+  
+<svg width="960" height="400" viewBox="0.00 0.00 491.00 142.00" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" style=" display: block; margin: auto auto auto auto">
+<g id="graph0" class="graph" transform="scale(1 1) rotate(0) translate(4 138)">
+<title>
+grid
+</title>
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-138 487,-138 487,4 -4,4"></polygon> <g id="clust1" class="cluster">
+<title>
+cluster_01
+</title>
+<polygon fill="none" stroke="black" points="8,-8 8,-126 376,-126 376,-8 8,-8"></polygon> <text text-anchor="middle" x="192" y="-109.4" font-family="Times,serif" font-size="14.00">Training Set (80%)</text> </g> <g id="clust3" class="cluster">
+<title>
+cluster_03
+</title>
+<polygon fill="none" stroke="black" points="226,-16 226,-93 368,-93 368,-16 226,-16"></polygon> <text text-anchor="middle" x="297" y="-76.4" font-family="Times,serif" font-size="14.00">Validation Fold (25%)</text> </g> <g id="clust2" class="cluster">
+<title>
+cluster_02
+</title>
+<polygon fill="none" stroke="black" points="16,-16 16,-93 210,-93 210,-16 16,-16"></polygon> <text text-anchor="middle" x="113" y="-76.4" font-family="Times,serif" font-size="14.00">Training Fold (75%)</text> </g> <g id="clust4" class="cluster">
+<title>
+cluster_04
+</title>
+<polygon fill="none" stroke="black" points="384,-16 384,-93 483,-93 483,-16 384,-16"></polygon> <text text-anchor="middle" x="433.5" y="-76.4" font-family="Times,serif" font-size="14.00">Test Set (20%)</text> </g> <!-- A1 --> <g id="node1" class="node">
+<title>
+A1
+</title>
+<polygon fill="lightblue" stroke="black" points="78,-60 24,-60 24,-24 78,-24 78,-60"></polygon> <text text-anchor="middle" x="51" y="-37.8" font-family="Times,serif" font-size="14.00">20%</text> </g> <!-- A2 --> <g id="node2" class="node">
+<title>
+A2
+</title>
+<polygon fill="lightblue" stroke="black" points="140,-60 86,-60 86,-24 140,-24 140,-60"></polygon> <text text-anchor="middle" x="113" y="-37.8" font-family="Times,serif" font-size="14.00">20%</text> </g> <!-- A1&#45;&#45;A2 --> <!-- A3 --> <g id="node3" class="node">
+<title>
+A3
+</title>
+<polygon fill="lightblue" stroke="black" points="202,-60 148,-60 148,-24 202,-24 202,-60"></polygon> <text text-anchor="middle" x="175" y="-37.8" font-family="Times,serif" font-size="14.00">20%</text> </g> <!-- A2&#45;&#45;A3 --> <!-- B1 --> <g id="node4" class="node">
+<title>
+B1
+</title>
+<polygon fill="lightgreen" stroke="black" points="324,-60 270,-60 270,-24 324,-24 324,-60"></polygon> <text text-anchor="middle" x="297" y="-37.8" font-family="Times,serif" font-size="14.00">20%</text> </g> <!-- A3&#45;&#45;B1 --> <!-- C1 --> <g id="node5" class="node">
+<title>
+C1
+</title>
+<polygon fill="orange" stroke="black" points="460,-60 406,-60 406,-24 460,-24 460,-60"></polygon> <text text-anchor="middle" x="433" y="-37.8" font-family="Times,serif" font-size="14.00">20%</text> </g> <!-- B1&#45;&#45;C1 --> </g>
+</svg>
 
 ## Hyperparameter Tuning
 
