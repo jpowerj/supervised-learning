@@ -6,7 +6,7 @@ format:
   revealjs:
     smaller: true
     scrollable: true
-    footer: "Supervised Learning with Parametric Models"
+    #footer: "Supervised Learning with Parametric Models"
     css: gtown.css
     df-print: kable
     theme: [default, jj_custom.scss]
