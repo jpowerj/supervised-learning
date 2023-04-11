@@ -911,9 +911,16 @@ cor(ski_df$value, law_df$value)
 
 ## Lab
 
-* Download data: 
-* Train neural net
-* Best predictor wins a prize!
+* What are the keys to success in the NBA?
+
+```{r}
+nba_df <- readr::read_csv("./lab/nba_data_full.csv", show_col_types = FALSE)
+head(nba_df)
+```
+
+* Download data [here](https://github.com/jpowerj/supervised-learning/blob/main/lab/nba_data_full.csv) (`nba_data_full.csv`)
+  * Train neural net
+  * Best predictor wins a prize!
 
 ## Q & A
 
