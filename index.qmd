@@ -909,7 +909,7 @@ cor(ski_df$value, law_df$value)
 
 :::
 
-## Lab
+## Lab {.labtable}
 
 * What are the keys to success in the NBA?
 
@@ -919,8 +919,8 @@ head(nba_df)
 ```
 
 * Download data [here](https://github.com/jpowerj/supervised-learning/blob/main/lab/nba_data_full.csv) (`nba_data_full.csv`)
-  * Train neural net
-  * Best predictor wins a prize!
+  * Train neural net: **Classification** or **Regression**
+  * **Prize** for discovering strongest indicators of (a) Playoffs (b) Point differential
 
 ## Q & A
 

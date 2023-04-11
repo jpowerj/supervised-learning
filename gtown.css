@@ -18,6 +18,14 @@ table td {
   color: blue;
 }
 
+.labtable th:last-child {
+  color: orange;
+}
+
+.labtable th:not(:last-child):not(:first-child):not(:nth-child(2)):not(:nth-child(3)) {
+  color: blue;
+}
+
 .unsuptable th:not(:first-child) {
   color:blue;
 }

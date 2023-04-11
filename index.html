@@ -929,15 +929,15 @@ f \in C([a,b],[a,b])
 <title>
 grid
 </title>
-<polygon fill="white" stroke="transparent" points="-4,4 -4,-96.8 362,-96.8 362,4 -4,4"></polygon> <g id="clust1" class="cluster">
-<title>
-cluster_01
-</title>
-<polygon fill="none" stroke="black" points="8,-8 8,-84.8 243,-84.8 243,-8 8,-8"></polygon> <text text-anchor="middle" x="125.5" y="-68.2" font-family="Times,serif" font-size="14.00">Training Set (80%)</text> </g> <g id="clust2" class="cluster">
+<polygon fill="white" stroke="transparent" points="-4,4 -4,-96.8 362,-96.8 362,4 -4,4"></polygon> <g id="clust2" class="cluster">
 <title>
 cluster_02
 </title>
-<polygon fill="none" stroke="black" points="251,-8 251,-84.8 350,-84.8 350,-8 251,-8"></polygon> <text text-anchor="middle" x="300.5" y="-68.2" font-family="Times,serif" font-size="14.00">Test Set (20%)</text> </g> <!-- N1 --> <g id="node1" class="node">
+<polygon fill="none" stroke="black" points="251,-8 251,-84.8 350,-84.8 350,-8 251,-8"></polygon> <text text-anchor="middle" x="300.5" y="-68.2" font-family="Times,serif" font-size="14.00">Test Set (20%)</text> </g> <g id="clust1" class="cluster">
+<title>
+cluster_01
+</title>
+<polygon fill="none" stroke="black" points="8,-8 8,-84.8 243,-84.8 243,-8 8,-8"></polygon> <text text-anchor="middle" x="125.5" y="-68.2" font-family="Times,serif" font-size="14.00">Training Set (80%)</text> </g> <!-- N1 --> <g id="node1" class="node">
 <title>
 N1
 </title>
@@ -1143,7 +1143,7 @@ C1
 </div>
 </div>
 </section>
-<section id="lab" class="slide level2">
+<section id="lab" class="slide level2 labtable">
 <h2>Lab</h2>
 <ul>
 <li>What are the keys to success in the NBA?</li>
@@ -1151,44 +1151,38 @@ C1
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
 <div class="kable-table">
-<table>
+<table style="width:100%;">
 <colgroup>
-<col style="width: 3%">
-<col style="width: 8%">
-<col style="width: 4%">
-<col style="width: 6%">
-<col style="width: 6%">
-<col style="width: 3%">
-<col style="width: 9%">
+<col style="width: 15%">
 <col style="width: 4%">
 <col style="width: 12%">
-<col style="width: 4%">
-<col style="width: 4%">
+<col style="width: 5%">
+<col style="width: 7%">
+<col style="width: 7%">
 <col style="width: 6%">
-<col style="width: 2%">
-<col style="width: 2%">
-<col style="width: 2%">
-<col style="width: 1%">
-<col style="width: 2%">
-<col style="width: 2%">
-<col style="width: 2%">
+<col style="width: 7%">
+<col style="width: 4%">
+<col style="width: 3%">
+<col style="width: 3%">
+<col style="width: 3%">
 <col style="width: 2%">
 <col style="width: 3%">
+<col style="width: 3%">
+<col style="width: 3%">
+<col style="width: 3%">
+<col style="width: 5%">
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">season</th>
-<th style="text-align: left;">team_abbreviation</th>
-<th style="text-align: right;">age</th>
-<th style="text-align: right;">player_height</th>
-<th style="text-align: right;">player_weight</th>
+<th style="text-align: left;">year_team</th>
 <th style="text-align: right;">po_year</th>
 <th style="text-align: left;">team_full</th>
-<th style="text-align: left;">playoffs</th>
-<th style="text-align: left;">year_team</th>
-<th style="text-align: left;">Team</th>
+<th style="text-align: right;">mean_age</th>
+<th style="text-align: right;">mean_height</th>
+<th style="text-align: right;">mean_weight</th>
 <th style="text-align: right;">PtsSeason</th>
 <th style="text-align: right;">OppPtsSeason</th>
+<th style="text-align: right;">PtsDiff</th>
 <th style="text-align: right;">Reb</th>
 <th style="text-align: right;">Ast</th>
 <th style="text-align: right;">Stl</th>
@@ -1197,23 +1191,20 @@ C1
 <th style="text-align: right;">Pf</th>
 <th style="text-align: right;">Dreb</th>
 <th style="text-align: right;">Oreb</th>
-<th style="text-align: right;">PtsDiff</th>
+<th style="text-align: left;">playoffs</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">1997-98</td>
-<td style="text-align: left;">ATL</td>
+<td style="text-align: left;">1998_Atlanta Hawks</td>
+<td style="text-align: right;">1998</td>
+<td style="text-align: left;">Atlanta Hawks</td>
 <td style="text-align: right;">28.25000</td>
 <td style="text-align: right;">199.2312</td>
 <td style="text-align: right;">99.16655</td>
-<td style="text-align: right;">1998</td>
-<td style="text-align: left;">Atlanta Hawks</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">1998_Atlanta Hawks</td>
-<td style="text-align: left;">Atlanta</td>
 <td style="text-align: right;">95.9</td>
 <td style="text-align: right;">92.3</td>
+<td style="text-align: right;">3.6</td>
 <td style="text-align: right;">42.8</td>
 <td style="text-align: right;">19.0</td>
 <td style="text-align: right;">8.0</td>
@@ -1222,21 +1213,18 @@ C1
 <td style="text-align: right;">20.5</td>
 <td style="text-align: right;">29.5</td>
 <td style="text-align: right;">13.4</td>
-<td style="text-align: right;">3.6</td>
+<td style="text-align: left;">TRUE</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">1997-98</td>
-<td style="text-align: left;">BOS</td>
+<td style="text-align: left;">1998_Boston Celtics</td>
+<td style="text-align: right;">1998</td>
+<td style="text-align: left;">Boston Celtics</td>
 <td style="text-align: right;">25.85714</td>
 <td style="text-align: right;">200.2971</td>
 <td style="text-align: right;">95.02752</td>
-<td style="text-align: right;">1998</td>
-<td style="text-align: left;">Boston Celtics</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">1998_Boston Celtics</td>
-<td style="text-align: left;">Boston</td>
 <td style="text-align: right;">95.9</td>
 <td style="text-align: right;">98.5</td>
+<td style="text-align: right;">-2.6</td>
 <td style="text-align: right;">39.5</td>
 <td style="text-align: right;">22.1</td>
 <td style="text-align: right;">12.0</td>
@@ -1245,21 +1233,18 @@ C1
 <td style="text-align: right;">26.9</td>
 <td style="text-align: right;">24.9</td>
 <td style="text-align: right;">14.6</td>
-<td style="text-align: right;">-2.6</td>
+<td style="text-align: left;">FALSE</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">1997-98</td>
-<td style="text-align: left;">CHH</td>
+<td style="text-align: left;">1998_Charlotte Hornets</td>
+<td style="text-align: right;">1998</td>
+<td style="text-align: left;">Charlotte Hornets</td>
 <td style="text-align: right;">29.73333</td>
 <td style="text-align: right;">200.8293</td>
 <td style="text-align: right;">101.75581</td>
-<td style="text-align: right;">1998</td>
-<td style="text-align: left;">Charlotte Hornets</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">1998_Charlotte Hornets</td>
-<td style="text-align: left;">Charlotte</td>
 <td style="text-align: right;">96.6</td>
 <td style="text-align: right;">94.6</td>
+<td style="text-align: right;">2.0</td>
 <td style="text-align: right;">40.1</td>
 <td style="text-align: right;">23.4</td>
 <td style="text-align: right;">8.2</td>
@@ -1268,21 +1253,18 @@ C1
 <td style="text-align: right;">21.4</td>
 <td style="text-align: right;">28.4</td>
 <td style="text-align: right;">11.7</td>
-<td style="text-align: right;">2.0</td>
+<td style="text-align: left;">TRUE</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">1997-98</td>
-<td style="text-align: left;">CHI</td>
+<td style="text-align: left;">1998_Chicago Bulls</td>
+<td style="text-align: right;">1998</td>
+<td style="text-align: left;">Chicago Bulls</td>
 <td style="text-align: right;">30.60000</td>
 <td style="text-align: right;">201.3373</td>
 <td style="text-align: right;">103.69113</td>
-<td style="text-align: right;">1998</td>
-<td style="text-align: left;">Chicago Bulls</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">1998_Chicago Bulls</td>
-<td style="text-align: left;">Chicago</td>
 <td style="text-align: right;">96.7</td>
 <td style="text-align: right;">89.6</td>
+<td style="text-align: right;">7.1</td>
 <td style="text-align: right;">44.1</td>
 <td style="text-align: right;">23.1</td>
 <td style="text-align: right;">8.6</td>
@@ -1291,21 +1273,18 @@ C1
 <td style="text-align: right;">21.1</td>
 <td style="text-align: right;">29.2</td>
 <td style="text-align: right;">14.9</td>
-<td style="text-align: right;">7.1</td>
+<td style="text-align: left;">TRUE</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">1997-98</td>
-<td style="text-align: left;">CLE</td>
+<td style="text-align: left;">1998_Cleveland Cavaliers</td>
+<td style="text-align: right;">1998</td>
+<td style="text-align: left;">Cleveland Cavaliers</td>
 <td style="text-align: right;">26.37500</td>
 <td style="text-align: right;">199.2312</td>
 <td style="text-align: right;">96.75684</td>
-<td style="text-align: right;">1998</td>
-<td style="text-align: left;">Cleveland Cavaliers</td>
-<td style="text-align: left;">TRUE</td>
-<td style="text-align: left;">1998_Cleveland Cavaliers</td>
-<td style="text-align: left;">Cleveland</td>
 <td style="text-align: right;">92.5</td>
 <td style="text-align: right;">89.8</td>
+<td style="text-align: right;">2.7</td>
 <td style="text-align: right;">39.8</td>
 <td style="text-align: right;">22.9</td>
 <td style="text-align: right;">9.9</td>
@@ -1314,21 +1293,18 @@ C1
 <td style="text-align: right;">23.7</td>
 <td style="text-align: right;">28.2</td>
 <td style="text-align: right;">11.6</td>
-<td style="text-align: right;">2.7</td>
+<td style="text-align: left;">TRUE</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">1997-98</td>
-<td style="text-align: left;">DAL</td>
+<td style="text-align: left;">1998_Dallas Mavericks</td>
+<td style="text-align: right;">1998</td>
+<td style="text-align: left;">Dallas Mavericks</td>
 <td style="text-align: right;">26.25000</td>
 <td style="text-align: right;">201.9300</td>
 <td style="text-align: right;">101.51956</td>
-<td style="text-align: right;">1998</td>
-<td style="text-align: left;">Dallas Mavericks</td>
-<td style="text-align: left;">FALSE</td>
-<td style="text-align: left;">1998_Dallas Mavericks</td>
-<td style="text-align: left;">Dallas</td>
 <td style="text-align: right;">91.4</td>
 <td style="text-align: right;">97.5</td>
+<td style="text-align: right;">-6.1</td>
 <td style="text-align: right;">40.1</td>
 <td style="text-align: right;">18.7</td>
 <td style="text-align: right;">7.9</td>
@@ -1337,7 +1313,7 @@ C1
 <td style="text-align: right;">20.0</td>
 <td style="text-align: right;">27.8</td>
 <td style="text-align: right;">12.3</td>
-<td style="text-align: right;">-6.1</td>
+<td style="text-align: left;">FALSE</td>
 </tr>
 </tbody>
 </table>
@@ -1347,8 +1323,8 @@ C1
 <ul>
 <li>Download data <a href="https://github.com/jpowerj/supervised-learning/blob/main/lab/nba_data_full.csv">here</a> (<code>nba_data_full.csv</code>)
 <ul>
-<li>Train neural net</li>
-<li>Best predictor wins a prize!</li>
+<li>Train neural net: <strong>Classification</strong> or <strong>Regression</strong></li>
+<li><strong>Prize</strong> for discovering strongest indicators of (a) Playoffs (b) Point differential</li>
 </ul></li>
 </ul>
 </section>
