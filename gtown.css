@@ -42,6 +42,18 @@ tbody > tr:hover {
   color: orange;
 }
 
+.colC {
+  color: darkgreen;
+}
+
+.colD {
+  color: darkred;
+}
+
+.mono {
+  font-family: Monospace;
+}
+
 .smaller-lines ul {
   line-height: 1.1!important;
   margin-bottom: 8px!important;
@@ -49,6 +61,15 @@ tbody > tr:hover {
 
 .smaller-lines li {
   margin-top: 0.2em!important;
+}
+
+.regular-lines ul {
+  line-height: 1.3!important;
+  margin-bottom: 8px!important;
+}
+
+.regular-lines li {
+  margin-top: 0.3em!important;
 }
 
 .smaller-lines img#math {

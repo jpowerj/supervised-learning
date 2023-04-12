@@ -217,8 +217,6 @@ ggplot() +
   ylim(0,2)
 ```
 
-::: r-stack
-::: fragment
 ```{r, fig.height=4.75}
 ggplot(sup_data, aes(x=sqft, y=bedrooms, color=rating)) + 
   geom_point(size=g_pointsize) +
@@ -232,8 +230,8 @@ ggplot(sup_data, aes(x=sqft, y=bedrooms, color=rating)) +
   expand_limits(x=c(800,2700), y=c(0.8,2.2)) +
   geom_abline(data=rand_lines, aes(slope=slope, intercept=intercept), linetype="dashed")
 ```
-:::
-:::
+
+-   What **parameters** are we choosing when we draw a random line? Random curve?
 
 ## What Makes a "Good"/"Best" Guess? 🤔
 
@@ -372,6 +370,82 @@ g2_plot <- ggplot(data=(line_data %>% filter(id==1))) +
 g1_plot + g2_plot
 ```
 
+
+## The (Oversimplified) Big Picture {.smaller-lines}
+
+* A **model**: some representation of something in the world
+
+::: columns
+::: {.column width="55%"}
+
+::: {.regular-lines}
+
+* How **well** does our model represent the world?^[Computer scientists implicitly assume a [Correspondence Theory of Truth](https://en.wikipedia.org/wiki/Correspondence_theory_of_truth), hence the choice of name] $\mathsf{Correspondence}(y_{obs}, \theta)$
+
+* $P\left(y_{obs}, \theta\right)$, $P\left(\theta \; | \; y_{obs}\right)$, $P\left(y_{obs} \; | \; \theta\right)$^[Thanks to **Bayes' Rule**, mathematically we can always convert between the two: $P(A|B) = \frac{P(B|A)P(A)}{P(B)}$]
+
+* Maximum **Likelihood** Estimation?
+
+:::
+
+:::
+
+::: {.column width="45%"}
+
+```{dot}
+//| fig-height: 2.65
+//| fig-width: 4.5
+digraph grid
+{
+    graph [
+        overlap=true,
+        scale=0.2,
+        newrank=true
+    ]
+    nodesep=1.0
+    ranksep=1.0
+    rankdir="LR"
+    nodedir="LR"
+    scale=0.2
+    node [
+        style="filled",
+        color=black,
+        fillcolor=lightblue
+    ]
+	
+	subgraph cluster_01 {
+	    label="\"Nature\"";
+	    Obs[label="Thing(s) we can see"];
+	    Und[label="Underlying process",fillcolor=white];
+	    
+	}
+	{
+	Und -> Model[dir=back,style=dashed];
+	Model -> Obs[style=dashed];
+	}
+	{
+	    rank=source;
+	    Und -> Obs [constraint=false];
+	}
+	
+	subgraph cluster_02 {
+	    label="\"Science\""
+	    Model[style=dashed];
+	}
+}
+```
+
+:::
+:::
+
+$$
+\begin{align*}
+\mathsf{Correspondence}(y_{obs}, \theta) &\equiv P(y = y_{obs}, \theta) \\
+P(y = y_{obs}, \theta) &= P(y=y_{obs} \; | \; \theta)P(\theta) \\
+&\propto P\left(y = y_{obs} \; | \; \theta\right)\ldots \implies \text{(maximize this!)}  \\
+\end{align*}
+$$
+
 ## Measuring Errors: F1 Score
 
 - How can we reward guesses which best *discriminate* between classes?
@@ -392,19 +466,87 @@ $$
 
 ## Measuring Errors: The Loss Function
 
-- What about the regression case?
-    - We can no longer just say "true prediction good, false prediction bad"
+- What about **regression**?
+    - No longer just "true prediction good, false prediction bad"
 - We have to quantify **how bad** the guess is!
     - Then we can scale the penalty accordingly: $penalty \propto badness$
-- Some common loss functions
+- Enter **Loss Functions**!
+    - **Squared Error**
 $$
-\mathcal{L}(y_{pred}, y_{obs}) = (y_{pred} - y_{obs})^2
+\mathcal{L}_{2}(y_{obs}, y_{pred}) = (y_{obs} - y_{pred})^2
 $$
+    - **Kullback-Leibler Divergence** (Probability distributions)
+$$
+\mathcal{L}_{KL}(y_{obs}, y_{pred}) = \sum_{\omega \in \Omega} y_{obs}(\omega) \log\left(\frac{y_{obs}(\omega)}{y_{pred}(\omega)}\right)
+$$
+
+::: {.aside}
+Potentially important: $\mathcal{L}_{2}(x,y) = \mathcal{L}_{2}(y,x)$, but can have (usually have) $\mathcal{L}_{KL}(x,y) \neq \mathcal{L}_{KL}(y,x)$
+:::
 
 ## Calculus Rears its Ugly Head
 
-- Neural networks use **gradient descent** and **backpropagation** to improve their predictions given a particular loss function.
+- Neural networks use **derivatives**/**gradients** to improve their predictions given a particular loss function.
+
+::: columns
+::: {.column width="50%"}
+
+```{r,fig.width=4,fig.height=2.8}
+base <-
+  ggplot() +
+  xlim(-5, 5) +
+  ylim(0, 25) +
+  labs(
+    x = "Y[obs] - Y[pred]",
+    y = "Prediction Badness (Loss)"
+  ) +
+  global_theme
+
+my_fn <- function(x) { return(x^2) }
+my_deriv2 <- function(x) { return(4*x - 4) }
+my_derivN4 <- function(x) { return(-8*x - 16) }
+base + geom_function(fun = my_fn, color=cbPalette[1], linewidth=1) +
+  geom_point(data=as.data.frame(list(x=2,y=4)), aes(x=x,y=y), color=cbPalette[2], size=g_pointsize/2) + 
+  geom_function(fun = my_deriv2, color=cbPalette[2], linewidth=1) +
+  geom_point(data=as.data.frame(list(x=-4,y=16)), aes(x=x,y=y), color=cbPalette[3], size=g_pointsize/2) + 
+  geom_function(fun = my_derivN4, color=cbPalette[3], linewidth=1)
+```
+
+:::
+
+::: {.column width="50%"}
+
+```{r,fig.width=4,fig.height=2.8}
+my_fake_deriv <- function(x) { return(-x) }
+my_fake_deriv2 <- function(x) { return(-(1/2)*x + 1/2) }
+my_fake_deriv3 <- function(x) { return(-(1/4)*x + 3/4) }
+
+d=data.frame(x=c(-2,-1,0,1,2), y=c(1,0,0,1,1))
+base <- ggplot() +
+  xlim(-5,5) +
+  ylim(0,2) +
+  labs(
+    x="Y[obs] - Y[pred]",
+    y="Prediction Badness (Loss)"
+  ) +
+  geom_step(data=d, mapping=aes(x=x, y=y), linewidth=1) +
+  global_theme
+#geom_step(data=d, mapping=aes(x=x, y=y), direction="vh", linetype=3) +
+#geom_point(data=d, mapping=aes(x=x, y=y), color="red")
+
+base + geom_point(data=as.data.frame(list(x=2,y=4)), aes(x=x,y=y), color=cbPalette[2], size=g_pointsize/2) + 
+  geom_function(fun = my_fake_deriv, color=cbPalette[2], linewidth=1) +
+  geom_function(fun = my_fake_deriv2, color=cbPalette[3], linewidth=1) +
+  geom_function(fun = my_fake_deriv3, color=cbPalette[4], linewidth=1) +
+  geom_point(data=as.data.frame(list(x=-1,y=1)), aes(x=x,y=y), color=cbPalette[2], size=g_pointsize/2) +
+  annotate("text", x = -0.7, y = 1.1, label = "?", size=6)
+```
+
+:::
+:::
+
 - Can we just use the $F_1$ score?
+
 $$
 \frac{\partial F_1(weights)}{\partial weights} = \ldots \; ? \; \ldots 💀
 $$
@@ -414,9 +556,11 @@ $$
 - We can quantify a differentiable **discrete** loss by asking the algorithm *how confident* it is
     - Closer to 0 $\implies$ more confident that the true label is 0
     - Closer to 1 $\implies$ more confident that the true label is 1
+
 $$
 \mathcal{L}_{CE}(y_{pred}, y_{obs}) = -(y_{obs}\log(y_{pred}) + (1-y_{obs})\log(1-y_{pred}))
 $$
+
 ```{r}
 y_pred <- seq(from = 0, to = 1, by = 0.001)
 compute_ce <- function(y_p, y_o) { return(-(y_o * log(y_p) + (1-y_o)*log(1-y_p))) }
@@ -446,7 +590,8 @@ $$
 \min_{\theta} \mathcal{L}(y_{obs}, y_{pred}(\theta))
 $$
 
-- How do we solve this?
+- What would this look like for the random-lines approach?
+- Is there a more efficient way?
 
 ## Calculus Strikes Again
 
@@ -637,12 +782,12 @@ poly_rss_test
 
 Original optimization:
 $$
-\min_{params} \mathcal{L}(y_{obs}, y_{pred}(params))
+\theta^* = \underset{\theta}{\operatorname{argmin}} \mathcal{L}(y_{obs}, y_{pred}(\theta))
 $$
 
 New optimization:
 $$
-\min_{\theta} \left[ \mathcal{L}(y_{obs}, y_{pred}(\theta)) + \mathsf{Complexity}(\theta) \right]
+\theta^* = \underset{\theta}{\operatorname{argmin}} \left[ \mathcal{L}(y_{obs}, y_{pred}(\theta)) + \mathsf{Complexity}(\theta) \right]
 $$
 
 - So how do we measure, and penalize, "complexity"?
@@ -909,7 +1054,7 @@ cor(ski_df$value, law_df$value)
 
 :::
 
-## Lab {.labtable}
+## Lab {.labtable .smaller-lines}
 
 * What are the keys to success in the NBA?
 
@@ -918,9 +1063,17 @@ nba_df <- readr::read_csv("./lab/nba_data_full.csv", show_col_types = FALSE)
 head(nba_df)
 ```
 
-* Download data [here](https://github.com/jpowerj/supervised-learning/blob/main/lab/nba_data_full.csv) (`nba_data_full.csv`)
-  * Train neural net: **Classification** or **Regression**
-  * **Prize** for discovering strongest indicators of (a) Playoffs (b) Point differential
+* Download data [here](https://github.com/jpowerj/supervised-learning/blob/main/lab/nba_data_full.csv) (`nba_data_full.csv`) [Codebook on next slide]
+  * Train neural net: <span class="colC">**Classification**</span> or <span class="colD">**Regression**</span>
+  * Key question: how do you **know** whether your results are "good"?
+  * **Prize** for discovering strongest indicators of (a) <span class="colC mono">playoffs</span> or (b) <span class="colD mono">PtsDiff</span>
+
+## Codebook
+  
+```{r}
+code_df <- readr::read_csv("./lab/codebook.csv")
+code_df
+```
 
 ## Q & A
 
